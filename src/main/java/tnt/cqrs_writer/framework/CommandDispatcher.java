@@ -36,7 +36,7 @@ public class CommandDispatcher {
         }
     }
 
-    public <T extends Command> void dispatch(T command) {
+    public <T extends Command> void dispatch(T command) throws Exception {
         @SuppressWarnings("unchecked")
         CommandHandler<T> handler = (CommandHandler<T>) handlers.get(command.getClass());
 

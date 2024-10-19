@@ -100,6 +100,10 @@ Das erschwärt jedoch die umsetzung eines möglichen snapshot mechanismus in dem
 Das Aggregate kappselt die apllication logic und die entities und value objects. Gegen die aggregates werden später durch den komandhandler validierungen iniziert.
 Bei einer erfolgreichen durchführung geben diese die zugehörigen events zurück. Bei einem fehler wird eine Exception geworfen, die im commandhandler abgefangen werden muss, um das system fehlertollerant zu halten.
 
+Die in dem Aggregate erzeugten events werden aktuell über eine Liste zurückgegeben was ok ist. In einer erweiterten version könnten diese an 
+einen EventPublischer direkt im aggregate übergeben werden. Dies ist aber nur eine optimierungs idee.Dies kann auch problematisch sein, da   
+dies die logik wie dinge zusammen hängen verstecken kann.
+
 ### Event Store
 
 Der Event Store besteht aus mehreren teilen, um die speicher technologie austauschbar zu machen. Zum beispiel kafka, jms , pulsar. 

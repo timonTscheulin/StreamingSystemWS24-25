@@ -1,5 +1,5 @@
 package tnt.cqrs_writer.commands;
 
-import tnt.cqrs_writer.dtypes.Position;
+import tnt.cqrs_writer.dtypes.PositionPoint;
 
-public record CreateVehicle(String name, Position startPosition) implements Command { }
+public record CreateVehicle(String name, PositionPoint startPosition) implements Command { }

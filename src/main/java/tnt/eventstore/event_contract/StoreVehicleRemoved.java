@@ -1,5 +1,5 @@
 package tnt.eventstore.event_contract;
 
-public class StoreVehicleDeleted {
+public class StoreVehicleRemoved extends BaseStoreEvent{
     String vehicleId;
 }

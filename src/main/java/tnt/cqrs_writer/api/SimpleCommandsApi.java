@@ -3,20 +3,21 @@ package tnt.cqrs_writer.api;
 import tnt.cqrs_writer.commands.CreateVehicle;
 import tnt.cqrs_writer.commands.MoveVehicle;
 import tnt.cqrs_writer.commands.RemoveVehicle;
+import tnt.cqrs_writer.dtypes.PositionDelta;
+import tnt.cqrs_writer.dtypes.PositionPoint;
 import tnt.cqrs_writer.framework.CommandDispatcher;
-import tnt.cqrs_writer.dtypes.Position;
 
 public class SimpleCommandsApi implements VehicleCommands {
     CommandDispatcher commandDispatcher = new CommandDispatcher();
 
     @Override
-    public void createVehicle(String name, Position startPosition) throws Exception {
+    public void createVehicle(String name, PositionPoint startPosition) throws Exception {
         CreateVehicle command = new CreateVehicle(name, startPosition);
         commandDispatcher.dispatch(command);
     }
 
     @Override
-    public void moveVehicle(String name, Position moveVector) throws Exception {
+    public void moveVehicle(String name, PositionDelta moveVector) throws Exception {
         MoveVehicle command = new MoveVehicle(name, moveVector);
         commandDispatcher.dispatch(command);
     }
