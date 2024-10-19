@@ -13,11 +13,11 @@ public class CommandDispatcher {
     private final Map<Class<? extends Command>, CommandHandler<? extends Command>> handlers = new HashMap<>();
 
     public CommandDispatcher() {
-        registerAnnotatedHandlers("src.main.java.tnt.cqrs_writer.handlers");
+        registerAnnotatedHandlers("tnt.cqrs_writer.handlers");
     }
 
     private void registerAnnotatedHandlers(String packageName) {
-        Reflections reflections = new Reflections(packageName);
+        Reflections reflections = new Reflections(packageName/*, new TypeAnnotationsScanner(), new SubTypesScanner()*/);
         Set<Class<?>> handlerClasses = reflections.getTypesAnnotatedWith(CommandHandlerOf.class);
 
         for (Class<?> handlerClass : handlerClasses) {

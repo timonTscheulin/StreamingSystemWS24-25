@@ -1,4 +1,4 @@
-package tnt.dtypes;
+package tnt.cqrs_reader.dtypes;
 
 import java.io.Serializable;
 

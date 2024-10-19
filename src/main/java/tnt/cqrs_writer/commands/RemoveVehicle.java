@@ -1,4 +1,3 @@
 package tnt.cqrs_writer.commands;
 
-public class RemoveVehicle {
-}
+public record RemoveVehicle(String name) implements Command {}

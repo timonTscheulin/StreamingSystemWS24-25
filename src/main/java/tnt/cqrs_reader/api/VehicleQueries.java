@@ -1,12 +1,12 @@
 package tnt.cqrs_reader.api;
 
 import tnt.cqrs_reader.dtos.VehicleDTO;
-import tnt.dtypes.Position;
+import tnt.cqrs_reader.dtypes.Position;
 
-import java.util.Enumeration;
+import java.util.List;
 
 public interface VehicleQueries {
     public VehicleDTO getVehicleByName(String name);
-    public Enumeration<VehicleDTO> getVehicles();
-    public Enumeration<VehicleDTO> getVehiclesAtPosition(Position position);
+    public List<VehicleDTO> getVehicles();
+    public List<VehicleDTO> getVehiclesAtPosition(Position position);
 }

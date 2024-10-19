@@ -14,8 +14,9 @@ public class ActiveMQMain {
         String queueName = "exampleQueue";
 
         // JMS Verbindungsfactory erstellen
-        try (ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
-             JMSContext context = connectionFactory.createContext(username, password)) {
+        try {
+            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
+            JMSContext context = connectionFactory.createContext(username, password);
 
             // Queue erstellen
             Queue queue = context.createQueue(queueName);

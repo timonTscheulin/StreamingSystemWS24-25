@@ -1,6 +1,6 @@
 package tnt.cqrs_writer.api;
 
-import tnt.dtypes.Position;
+import tnt.cqrs_writer.dtypes.Position;
 
 public interface VehicleCommands {
     void createVehicle(String name, Position startPosition) throws Exception;

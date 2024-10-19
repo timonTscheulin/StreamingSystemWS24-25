@@ -1,6 +1,6 @@
 package tnt.cqrs_reader.dtos;
 
-import tnt.dtypes.Position;
+import tnt.cqrs_reader.dtypes.Position;
 
 public interface VehicleDTO {
     public String getName();
