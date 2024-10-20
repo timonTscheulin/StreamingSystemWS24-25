@@ -34,7 +34,7 @@ public class ActiveMQArtemisStore implements EventStoreConnector {
     }
 
     @Override
-    public void storeEvent(BaseStoreEvent event, EventScope scope) throws EventStoreException {
+    public void storeEvent(BaseStoreEvent event) throws EventStoreException {
         JMSProducer producer = connectionContext.createProducer();
         producer.send(connectionContext.createQueue(defaultQueueName), event);
     }

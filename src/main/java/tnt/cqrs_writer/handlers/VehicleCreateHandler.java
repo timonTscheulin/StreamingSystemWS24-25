@@ -17,7 +17,7 @@ public class VehicleCreateHandler implements CommandHandler<CreateVehicle> {
     private final VehicleRepository vehicleRepository = VehicleRepository.getInstance();
 
     @Override
-    public void handle(CreateVehicle command) throws InstanceAlreadyExistsException {
+    public List<BaseEvent> handle(CreateVehicle command) throws InstanceAlreadyExistsException {
         log.debug("Handling CreateVehicle command for vehicle ID: {}", command.name());
 
         Vehicle vehicle = vehicleRepository.getVehicle(command.name());
@@ -33,10 +33,7 @@ public class VehicleCreateHandler implements CommandHandler<CreateVehicle> {
             vehicleRepository.updateVehicle(vehicle);
             log.info("Vehicle with ID: {} successfully created and updated in repository.", command.name());
 
-            //@todo Store Events - log placeholder for storing events
-            log.debug("Events for vehicle ID: {} should be stored. Events: {}", command.name(), events);
-
-            //@todo Store Events
+            return events;
         } catch (Exception e) {
             log.error("An error occurred while applying the CreateVehicle command for vehicle ID: {}. Error: {}", command.name(), e.getMessage(), e);
             throw e;

@@ -13,6 +13,6 @@ public class VehicleRemoved implements BaseEvent {
 
     @Override
     public BaseStoreEvent toStoreEvent() {
-        return new StoreVehicleRemoved();
+        return new StoreVehicleRemoved(vehicleId);
     }
 }

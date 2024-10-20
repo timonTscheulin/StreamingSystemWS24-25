@@ -45,13 +45,12 @@ public class EventStore {
     /**
      * Speichert mehrere Events auf einmal unter einem bestimmten Scope.
      * @param events Die Liste von Events, die gespeichert werden sollen
-     * @param scope Der Scope, unter dem die Events abgelegt werden
      */
-    public void store(List<BaseEvent> events, EventScope scope) throws EventStoreException {
+    public void store(List<BaseEvent> events) throws EventStoreException {
         ensureIsConnected();
         for (BaseEvent event : events) {
             if (event != null) {
-                connector.storeEvent(event.toStoreEvent(), scope);
+                connector.storeEvent(event.toStoreEvent());
                 log.info("Stored event successfully");
             }
             else {

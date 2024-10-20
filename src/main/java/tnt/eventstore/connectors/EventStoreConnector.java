@@ -9,11 +9,10 @@ import java.util.List;
 public interface EventStoreConnector {
     /**
      * Speichert ein einzelnes Event in dem spezifischen Event-Scope.
-     * @param event Das zu speichernde Event
-     * @param scope Der Scope, unter dem das Event gespeichert wird
+     * @param event Das zu speichernde Events
      * @throws EventStoreException falls ein Speicherfehler auftritt
      */
-    void storeEvent(BaseStoreEvent event, EventScope scope) throws EventStoreException;
+    void storeEvent(BaseStoreEvent event) throws EventStoreException;
 
     /**
      * Ruft alle Events eines bestimmten Scopes ab.

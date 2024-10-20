@@ -6,7 +6,7 @@ import tnt.cqrs_writer.commands.CreateVehicle;
 import tnt.cqrs_writer.commands.MoveVehicle;
 import tnt.cqrs_writer.commands.RemoveVehicle;
 import tnt.cqrs_writer.domain_model.events.VehicleCreated;
-import tnt.cqrs_writer.domain_model.events.VehicleMoved;
+import tnt.cqrs_writer.domain_model.events.VehicleNewPosition;
 import tnt.cqrs_writer.domain_model.events.VehicleRemoved;
 import tnt.cqrs_writer.domain_model.value_objects.AbsolutPosition;
 import tnt.cqrs_writer.framework.events.BaseEvent;
@@ -52,7 +52,7 @@ public class Vehicle {
         }
 
         // add event if no error was thrown
-        events.add(new VehicleCreated(vehicleId));
+        events.add(new VehicleCreated(vehicleId, command.startPosition().x(), command.startPosition().y()));
 
         return events;
     }
@@ -72,7 +72,7 @@ public class Vehicle {
         vehiclePosition = new AbsolutPosition(newAbsX, newAbsY);
 
         log.info("Vehicle with id: {} moved to new position: {}", vehicleId, vehiclePosition);
-        events.add(new VehicleMoved(vehicleId, new AbsolutPosition(newAbsX, newAbsY)));
+        events.add(new VehicleNewPosition(vehicleId, newAbsX, newAbsY));
 
         return events;
     }

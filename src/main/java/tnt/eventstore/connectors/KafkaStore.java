@@ -9,7 +9,7 @@ import java.util.List;
 public class KafkaStore implements EventStoreConnector {
 
     @Override
-    public void storeEvent(BaseStoreEvent event, EventScope scope) throws EventStoreException {
+    public void storeEvent(BaseStoreEvent event) throws EventStoreException {
 
     }
 

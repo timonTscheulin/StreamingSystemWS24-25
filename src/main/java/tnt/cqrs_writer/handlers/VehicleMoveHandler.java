@@ -17,7 +17,7 @@ public class VehicleMoveHandler implements CommandHandler<MoveVehicle> {
     private final VehicleRepository vehicleRepository = VehicleRepository.getInstance();
 
     @Override
-    public void handle(MoveVehicle command) throws InstanceNotFoundException {
+    public List<BaseEvent> handle(MoveVehicle command) throws InstanceNotFoundException {
         log.debug("Handling MoveVehicle command for vehicle ID: {}", command.name());
 
         Vehicle vehicle = vehicleRepository.getVehicle(command.name());
@@ -31,8 +31,7 @@ public class VehicleMoveHandler implements CommandHandler<MoveVehicle> {
             List<BaseEvent> events = vehicle.apply(command);
             vehicleRepository.updateVehicle(vehicle);
             log.info("Vehicle with ID: {} successfully moved and updated in repository.", command.name());
-            //@todo Store Events
-            log.debug("Events for vehicle ID: {} should be stored. Events: {}", command.name(), events);
+            return events;
         } catch (Exception e) {
             log.error("An error occurred while applying the MoveVehicle command for vehicle ID: {}. Error: {}", command.name(), e.getMessage(), e);
             throw e;
