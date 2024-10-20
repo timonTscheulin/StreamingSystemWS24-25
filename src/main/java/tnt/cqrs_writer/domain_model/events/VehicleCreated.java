@@ -3,7 +3,6 @@ package tnt.cqrs_writer.domain_model.events;
 import tnt.cqrs_writer.dtypes.PositionPoint;
 import tnt.cqrs_writer.framework.events.BaseEvent;
 import tnt.eventstore.event_contract.StoreVehicleCreated;
-import tnt.eventstore.event_contract.types.AbsolutPoint;
 
 public class VehicleCreated implements BaseEvent {
 
