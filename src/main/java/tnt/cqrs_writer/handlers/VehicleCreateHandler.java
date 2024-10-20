@@ -14,7 +14,7 @@ import java.util.List;
 @CommandHandlerOf(CreateVehicle.class)
 public class VehicleCreateHandler implements CommandHandler<CreateVehicle> {
     private static final Logger log = LoggerFactory.getLogger(VehicleCreateHandler.class);
-    private VehicleRepository vehicleRepository = VehicleRepository.getInstance();
+    private final VehicleRepository vehicleRepository = VehicleRepository.getInstance();
 
     @Override
     public void handle(CreateVehicle command) throws InstanceAlreadyExistsException {
