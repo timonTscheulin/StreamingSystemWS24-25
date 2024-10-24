@@ -6,4 +6,9 @@ public class StoreVehicleRemoved extends BaseStoreEvent{
     public StoreVehicleRemoved(String vehicleId) {
         this.vehicleId = vehicleId;
     }
+
+    @Override
+    public String getId() {
+        return vehicleId;
+    }
 }

@@ -1,6 +1,7 @@
 package tnt.eventstore.connectors;
 
 import kotlin.NotImplementedError;
+import tnt.cqrs_writer.framework.events.BaseEvent;
 import tnt.eventstore.EventScope;
 import tnt.eventstore.event_contract.BaseStoreEvent;
 
@@ -9,7 +10,7 @@ import java.util.List;
 public class KafkaStore implements EventStoreConnector {
 
     @Override
-    public void storeEvent(BaseStoreEvent event) throws EventStoreException {
+    public void storeEvent(List<BaseEvent> events) throws EventStoreException {
         throw new NotImplementedError();
     }
 

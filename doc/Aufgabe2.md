@@ -120,6 +120,11 @@ Vorteile dieses Ansatzes in der Praxis
 Auf transaktionen wird erst einmal verzichtet, da diese nicht gerade einfach für die einzelnen subsysteme umzusetzen sind. Zudem muss darüber nachgedacht werden, ob die anforderungen
 und das einsazzenario den einsatz von transaktionen rechtfertigen,da sie einen nicht unerheblichen einfluss auf die Performanz des system haben.
 
+Als performance optimierung wäre es möglich, bei jedem aufruf von store die events im store objekt zu puffern bis ein aussreichend großer batch entstanden ist.
+Dies wird in diesem fall aber nicht umgesetzt, da dies den implementierungsaufwand deutlich erhöhen würde, da ein mechanismus gefunden werden müsste, der 
+Events nicht im eventstore ablegt und trotzdem bei einem read alle erfolgreich angenommenen events zurückgibt, ohne dass diese tatsächlich in den event store geschrieben wurden.
+Ganz zu schweigen von der complexität die bei einem multie threading/ processing szenario hinzukommt.
+
 ### Events
 
 Die Events wissen wie sie serialisiert werden können und sind einfache java objekte ohne applikationslogik. Die Events sind mit dem Eventstore

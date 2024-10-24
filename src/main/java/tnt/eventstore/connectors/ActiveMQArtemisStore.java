@@ -1,12 +1,15 @@
 package tnt.eventstore.connectors;
 
-import kotlin.NotImplementedError;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import tnt.cqrs_writer.framework.events.BaseEvent;
 import tnt.eventstore.EventScope;
 import tnt.eventstore.event_contract.BaseStoreEvent;
 
 import javax.jms.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 public class ActiveMQArtemisStore implements EventStoreConnector {
@@ -15,12 +18,13 @@ public class ActiveMQArtemisStore implements EventStoreConnector {
     private static final String defaultUsername = "artemis";
     private static final String defaultPassword = "artemis";
     private static final String defaultQueueName = "default";
+    private static final Logger log = LoggerFactory.getLogger(ActiveMQArtemisStore.class);
     private String username;
     private String password;
     private String brokerUrl;
 
     private ActiveMQConnectionFactory connectionFactory;
-    private JMSContext connectionContext;
+    private Connection connection;
 
     public ActiveMQArtemisStore() {
         this(defaultBrokerUrl, defaultUsername, defaultPassword);
@@ -34,55 +38,92 @@ public class ActiveMQArtemisStore implements EventStoreConnector {
     }
 
     @Override
-    public void storeEvent(BaseStoreEvent event) throws EventStoreException {
-        JMSProducer producer = connectionContext.createProducer();
-        producer.send(connectionContext.createQueue(defaultQueueName), event);
+    public void storeEvent(List<BaseEvent> events) throws EventStoreException, JMSException {
+        Session session = connection.createSession(true, Session.SESSION_TRANSACTED);
+        try {
+            log.info("Start session to store events in broker {}", brokerUrl);
+            Queue queue = session.createQueue(defaultQueueName);
+            MessageProducer producer = session.createProducer(queue);
+            producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+
+            for (BaseEvent event : events) {
+                ObjectMessage message = session.createObjectMessage(event.toStoreEvent());
+                producer.send(message);
+            }
+
+            session.commit();
+            log.info("Events successfully commited.");
+        } catch (Exception e) {
+            session.rollback();
+            log.error(e.getMessage(), e);
+            throw new EventStoreException("Failed to store events", EventStoreException.ErrorCode.STORAGE_ERROR, e);
+        } finally {
+            session.close();
+        }
     }
 
     @Override
-    public List<BaseStoreEvent> fetchEventsByScope(EventScope scope) {
-        /* only placeholder for later feature */
-        throw new NotImplementedError();
+    public List<BaseStoreEvent> fetchEventsByScope(EventScope scope) throws EventStoreException {
+        List<BaseStoreEvent> events = this.getAllEvents();
+        // possibly a jms selector is a better solution?
+        return events.stream()
+                .filter(event -> event.getClass().equals(scope.getEventType()) && event.getId().equals(scope.getId()))
+                .toList();
     }
 
     @Override
     public List<BaseStoreEvent> getAllEvents() throws EventStoreException {
         List<BaseStoreEvent> events = new ArrayList<>();
-        Queue queue = connectionContext.createQueue(defaultQueueName);
-        JMSConsumer consumer = connectionContext.createConsumer(queue);
-
+        // do we need a second method which allows projectors to pull only the newest events?
+        // better performance ...
+        Session session = null;
         try {
-            Message message;
-            while ((message = consumer.receive(1000)) != null) { // Timeout of 1 second
-                if (message instanceof ObjectMessage) {
-                    events.add((BaseStoreEvent) ((ObjectMessage) message).getObject());
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Queue queue = session.createQueue(defaultQueueName);
+            QueueBrowser browser = session.createBrowser(queue);
+            Enumeration<?> messages = browser.getEnumeration();
+
+            while (messages.hasMoreElements()) {
+                Message message = (Message) messages.nextElement();
+                if (message instanceof ObjectMessage objectMessage) {
+                    events.add((BaseStoreEvent) objectMessage.getObject());
                 }
             }
-        } catch (JMSException e) {
-            throw new EventStoreException("Failed to retrieve all events", EventStoreException.ErrorCode.RETRIEVAL_ERROR, e);
-        }
 
+        } catch (JMSException e) {
+            log.error(e.getMessage(), e);
+            throw new EventStoreException("Failed to retrieve events", EventStoreException.ErrorCode.CONNECTION_ERROR, e);
+        } finally {
+            try {
+                log.info("Closing read session.");
+                if (session != null) {
+                    session.close();
+                }
+            } catch (JMSException e) {
+                log.warn(e.getMessage(), e);
+            }
+        }
         return events;
     }
 
     @Override
-    public void connect() {
-        if (connectionContext == null) {
-            connectionContext = connectionFactory.createContext(this.username, this.password);
+    public void connect() throws JMSException {
+        if (connection == null) {
+            connection = connectionFactory.createConnection(this.username, this.password);
         }
     }
 
     @Override
-    public void disconnect() {
-        if (connectionContext != null) {
-            connectionContext.close();
-            connectionContext = null;
+    public void disconnect() throws JMSException {
+        if (connection != null) {
+            connection.close();
+            connection = null;
         }
     }
 
     @Override
     public boolean isConnected() {
-        return connectionContext != null;
+        return connection != null;
     }
 
     @Override

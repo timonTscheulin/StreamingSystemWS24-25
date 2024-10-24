@@ -10,4 +10,9 @@ public class StoreVehicleCreated extends BaseStoreEvent {
         this.vehicleId = vehicleId;
         startPosition = new AbsolutPoint(startX, startY);
     }
+
+    @Override
+    public String getId() {
+        return vehicleId;
+    }
 }

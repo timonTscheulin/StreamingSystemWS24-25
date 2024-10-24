@@ -7,6 +7,7 @@ import tnt.eventstore.connectors.EventStoreConnector;
 import tnt.eventstore.connectors.EventStoreException;
 import tnt.eventstore.event_contract.BaseStoreEvent;
 
+import javax.jms.JMSException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,17 +47,9 @@ public class EventStore {
      * Speichert mehrere Events auf einmal unter einem bestimmten Scope.
      * @param events Die Liste von Events, die gespeichert werden sollen
      */
-    public void store(List<BaseEvent> events) throws EventStoreException {
+    public void store(List<BaseEvent> events) throws EventStoreException, JMSException {
         ensureIsConnected();
-        for (BaseEvent event : events) {
-            if (event != null) {
-                connector.storeEvent(event.toStoreEvent());
-                log.info("Stored event successfully");
-            }
-            else {
-                log.warn("Null value as event received.");
-            }
-        }
+        connector.storeEvent(events);
         closeConnection();
     }
 
@@ -64,7 +57,7 @@ public class EventStore {
      * Gibt alle gespeicherten Events zurück.
      * @return Liste aller gespeicherten Events
      */
-    public List<BaseStoreEvent> getAllEvents() throws EventStoreException {
+    public List<BaseStoreEvent> getAllEvents() throws EventStoreException, JMSException {
         List<BaseStoreEvent> events = new ArrayList<>();
         ensureIsConnected();
         events = connector.getAllEvents();
@@ -77,7 +70,7 @@ public class EventStore {
      * @param scope Der Scope, unter dem die Events abgelegt wurden
      * @return Liste der Events, die zum angegebenen Scope gehören
      */
-    public List<BaseStoreEvent> getAllEventsOfScope(EventScope scope) throws EventStoreException {
+    public List<BaseStoreEvent> getAllEventsOfScope(EventScope scope) throws EventStoreException, JMSException {
         List<BaseStoreEvent> events = new ArrayList<>();
         ensureIsConnected();
         events = connector.fetchEventsByScope(scope);
@@ -98,7 +91,7 @@ public class EventStore {
                     connector.connect();
                     log.info("EventStore: Connection to storage system established.");
                     return;
-                } catch (EventStoreException e) {
+                } catch (EventStoreException | JMSException e) {
                     log.warn("EventStore: Connection attempt " + (i + 1) + " failed.", e);
                     try {
                         Thread.sleep(retryDelayMs);
@@ -116,7 +109,7 @@ public class EventStore {
         }
     }
 
-    private void closeConnection() throws EventStoreException {
+    private void closeConnection() throws EventStoreException, JMSException {
         isConnectorAvailable();
         if (!keepConnectionOpen && connector.isConnected()) {
             connector.disconnect();
@@ -124,7 +117,7 @@ public class EventStore {
         }
     }
 
-    public void closeFinally() throws EventStoreException {
+    public void closeFinally() throws EventStoreException, JMSException {
         isConnectorAvailable();
         connector.disconnect();
         connector = null;

@@ -4,15 +4,16 @@ import tnt.cqrs_writer.framework.events.BaseEvent;
 import tnt.eventstore.EventScope;
 import tnt.eventstore.event_contract.BaseStoreEvent;
 
+import javax.jms.JMSException;
 import java.util.List;
 
 public interface EventStoreConnector {
     /**
      * Speichert ein einzelnes Event in dem spezifischen Event-Scope.
-     * @param event Das zu speichernde Events
+     * @param events Die zu speichernden Events
      * @throws EventStoreException falls ein Speicherfehler auftritt
      */
-    void storeEvent(BaseStoreEvent event) throws EventStoreException;
+    void storeEvent(List<BaseEvent> events) throws EventStoreException, JMSException;
 
     /**
      * Ruft alle Events eines bestimmten Scopes ab.
@@ -33,13 +34,13 @@ public interface EventStoreConnector {
      * (Optional) Methode zur Verbindungseröffnung, z. B. beim Start einer neuen Connector-Instanz.
      * @throws EventStoreException falls ein Verbindungsfehler auftritt
      */
-    void connect() throws EventStoreException;
+    void connect() throws EventStoreException, JMSException;
 
     /**
      * (Optional) Methode zur Schließung von Verbindungen, z. B. beim Beenden der Anwendung.
      * @throws EventStoreException falls ein Fehler beim Schließen der Verbindung auftritt
      */
-    void disconnect() throws EventStoreException;
+    void disconnect() throws EventStoreException, JMSException;
 
     boolean isConnected();
 
