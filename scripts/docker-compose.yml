@@ -3,8 +3,8 @@ services:
     image: apache/activemq-artemis:latest-alpine
     container_name: activemq_artemis_broker
     ports:
-      - "61616:61616"  # admin console
-      - "8161:8161"    # service port
+      - "61616:61616"  # service port
+      - "8161:8161"    # admin console
 
   kafka_controller_1:
     image: apache/kafka:latest
