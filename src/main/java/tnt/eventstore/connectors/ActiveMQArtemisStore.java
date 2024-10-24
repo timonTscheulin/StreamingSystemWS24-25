@@ -17,7 +17,7 @@ public class ActiveMQArtemisStore implements EventStoreConnector {
     private static final String defaultBrokerUrl = "tcp://localhost:61616"; // Broker URL anpassen
     private static final String defaultUsername = "artemis";
     private static final String defaultPassword = "artemis";
-    private static final String defaultQueueName = "default";
+    private static final String defaultQueueName = "cqrs_default";
     private static final Logger log = LoggerFactory.getLogger(ActiveMQArtemisStore.class);
     private String username;
     private String password;

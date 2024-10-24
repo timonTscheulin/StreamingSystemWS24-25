@@ -20,6 +20,9 @@ public class VehicleRepository {
     }
 
     public Vehicle getVehicle(String vehicleId) {
+        // bad pattern singeltons are hard to test
+        // use instead dependency injection per reflection
+
         Vehicle result = null;
 
         if (aggregates.containsKey(vehicleId)) {

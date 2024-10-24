@@ -5,6 +5,10 @@ import org.slf4j.LoggerFactory;
 import tnt.cqrs_writer.api.SimpleCommandsApi;
 import tnt.cqrs_writer.dtypes.PositionDelta;
 import tnt.cqrs_writer.dtypes.PositionPoint;
+import tnt.eventstore.EventStore;
+import tnt.eventstore.event_contract.BaseStoreEvent;
+
+import java.util.List;
 
 public class main {
     private static final Logger log = LoggerFactory.getLogger(main.class);
@@ -14,5 +18,10 @@ public class main {
         api.createVehicle("Test", new PositionPoint(0,0));
         api.moveVehicle("Test", new PositionDelta(0,0));
         api.removeVehicle("Test");
+        EventStore store = EventStore.getInstance();
+        List<BaseStoreEvent> events =  store.getAllEvents();
+        for (BaseStoreEvent event : events) {
+            System.out.println(event);
+        }
     }
 }
