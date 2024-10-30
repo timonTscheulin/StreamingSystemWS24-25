@@ -18,6 +18,12 @@ public class VehicleMoveHandler implements CommandHandler<MoveVehicle> {
 
     @Override
     public List<BaseEvent> handle(MoveVehicle command) throws InstanceNotFoundException {
+
+        // simple gatekeeper to prevent unnecessary aggregate loads, if trivial properties contain wrong values.
+        if (command.deltaPosition().isZero()) {
+            throw new IllegalArgumentException("Move vector cannot be zero");
+        }
+
         log.debug("Handling MoveVehicle command for vehicle ID: {}", command.name());
 
         Vehicle vehicle = vehicleRepository.getVehicle(command.name());

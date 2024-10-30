@@ -4,8 +4,7 @@ import org.reflections.Reflections;
 import tnt.cqrs_writer.commands.Command;
 import tnt.cqrs_writer.framework.events.BaseEvent;
 import tnt.cqrs_writer.handlers.CommandHandler;
-import tnt.eventstore.EventStore;
-import tnt.eventstore.connectors.ActiveMQArtemisStore;
+import tnt.eventstore.connectors.ActiveMQProducer;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.HashMap;
@@ -15,8 +14,7 @@ import java.util.Set;
 
 public class CommandDispatcher {
     private final Map<Class<? extends Command>, CommandHandler<? extends Command>> handlers = new HashMap<>();
-    private final boolean keepEventStoreConnectionOpen = true;
-    private final EventStore eventStore = EventStore.getInstance(new ActiveMQArtemisStore(), keepEventStoreConnectionOpen);
+    private final ActiveMQProducer eventStore = new ActiveMQProducer();
 
     public CommandDispatcher() {
         registerAnnotatedHandlers("tnt.cqrs_writer.handlers");
@@ -52,7 +50,7 @@ public class CommandDispatcher {
 
         // @todo implement transactions for write into event store
         List<BaseEvent> events = handler.handle(command);
-        eventStore.store(events);
+        eventStore.storeEvent(events);
         // end of transaction
     }
 }

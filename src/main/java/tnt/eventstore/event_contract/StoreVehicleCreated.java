@@ -9,4 +9,12 @@ public class StoreVehicleCreated extends StoreVehicleBase {
         super(vehicleId);
         startPosition = new AbsolutPoint(startX, startY);
     }
+
+    public int getX() {
+        return startPosition.x();
+    }
+
+    public int getY() {
+        return startPosition.y();
+    }
 }

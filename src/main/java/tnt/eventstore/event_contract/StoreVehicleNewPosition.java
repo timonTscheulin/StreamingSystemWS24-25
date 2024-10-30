@@ -10,4 +10,12 @@ public class StoreVehicleNewPosition extends StoreVehicleBase {
         newPosition = new AbsolutPoint(x, y);
     }
 
+    public int getX() {
+        return newPosition.x();
+    }
+
+    public int getY() {
+        return newPosition.y();
+    }
+
 }
