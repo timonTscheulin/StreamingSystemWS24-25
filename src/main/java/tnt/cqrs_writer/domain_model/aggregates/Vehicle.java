@@ -19,7 +19,8 @@ import java.util.NoSuchElementException;
 public class Vehicle {
     private static final Logger log = LoggerFactory.getLogger(Vehicle.class);
     private String vehicleId;
-    private AbsolutPosition vehiclePosition;
+    private List<AbsolutPosition> vehiclePositions = new ArrayList<>();
+    private int moveCounter = 0;
     private boolean exists = false;
 
     public Vehicle(String vehicleId) {
@@ -43,8 +44,8 @@ public class Vehicle {
         // validate by apply steps to aggregate
         if (!exists) {
             exists = true;
-            vehiclePosition = new AbsolutPosition(command.startPosition().x(), command.startPosition().y());
-            log.info("Vehicle created with id: {} at position: {}", vehicleId, vehiclePosition);
+            vehiclePositions.add(new AbsolutPosition(command.startPosition().x(), command.startPosition().y()));
+            log.info("Vehicle created with id: {} at position: {}", vehicleId, vehiclePositions.getFirst());
         }
         else {
             log.error("CreateVehicle command failed for vehicle id: {}. Vehicle already exists.", vehicleId);
@@ -66,12 +67,25 @@ public class Vehicle {
             throw new NoSuchElementException("Can not apply Move command. Vehicle with id " + vehicleId + " not exists.");
         }
 
-        int newAbsX = vehiclePosition.x() + command.deltaPosition().x();
-        int newAbsY = vehiclePosition.y() + command.deltaPosition().y();
+        // solves task 3.1
+        if(moveCounter + 1 >= 20) {
+            return this.apply(new RemoveVehicle(vehicleId));
+        }
 
-        vehiclePosition = new AbsolutPosition(newAbsX, newAbsY);
+        int newAbsX = vehiclePositions.getLast().x() + command.deltaPosition().x();
+        int newAbsY = vehiclePositions.getLast().y() + command.deltaPosition().y();
+        AbsolutPosition newPosition = new AbsolutPosition(newAbsX, newAbsY);
 
-        log.info("Vehicle with id: {} moved to new position: {}", vehicleId, vehiclePosition);
+        // solves task 3.2
+        if (vehiclePositions.contains(newPosition)) {
+            return this.apply(new RemoveVehicle(vehicleId));
+        }
+
+        vehiclePositions.add(newPosition);
+        // solves task 3.1
+        moveCounter++;
+
+        log.info("Vehicle with id: {} moved to new position: {}", vehicleId, vehiclePositions.getLast());
         events.add(new VehicleNewPosition(vehicleId, newAbsX, newAbsY));
 
         return events;
