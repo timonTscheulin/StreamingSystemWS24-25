@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tnt.cqrs_writer.commands.RemoveVehicle;
 import tnt.cqrs_writer.domain_model.aggregates.Vehicle;
+import tnt.cqrs_writer.domain_model.repositories.PositionMapRepository;
+import tnt.cqrs_writer.domain_model.repositories.VehicleMovementRepository;
 import tnt.cqrs_writer.domain_model.repositories.VehicleRepository;
 import tnt.cqrs_writer.framework.CommandHandlerOf;
 import tnt.cqrs_writer.framework.events.BaseEvent;
@@ -15,6 +17,8 @@ import java.util.List;
 public class VehicleRemoveHandler implements CommandHandler<RemoveVehicle> {
     private static final Logger log = LoggerFactory.getLogger(VehicleRemoveHandler.class);
     private final VehicleRepository vehicleRepository = VehicleRepository.getInstance();
+    private final PositionMapRepository positionMapRepository = PositionMapRepository.getInstance();
+    private final VehicleMovementRepository vehicleMovementRepository = VehicleMovementRepository.getInstance();
 
     @Override
     public List<BaseEvent> handle(RemoveVehicle command) throws InstanceNotFoundException {

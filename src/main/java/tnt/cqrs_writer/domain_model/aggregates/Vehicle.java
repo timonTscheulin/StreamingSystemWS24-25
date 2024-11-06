@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class Vehicle {
+    /* This is the primary aggregate wich represents vehicles. It encapsulates the application logic, the data and
+     * event creation as a single logical unit.
+     */
     private static final Logger log = LoggerFactory.getLogger(Vehicle.class);
     private String vehicleId;
     private List<AbsolutPosition> vehiclePositions = new ArrayList<>();
