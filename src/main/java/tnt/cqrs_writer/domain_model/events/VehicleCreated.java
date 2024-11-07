@@ -18,4 +18,12 @@ public class VehicleCreated implements BaseEvent {
     public StoreVehicleCreated toStoreEvent() {
         return new StoreVehicleCreated(vehicleId, startPosition.x(), startPosition.y());
     }
+
+    public PositionPoint getStartPosition() {
+        return startPosition;
+    }
+
+    public String vehicleId() {
+        return vehicleId;
+    }
 }

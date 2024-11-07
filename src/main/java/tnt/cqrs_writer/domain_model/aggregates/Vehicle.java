@@ -104,10 +104,33 @@ public class Vehicle {
         }
 
         exists = false;
+        vehiclePositions = new ArrayList<>();
+        moveCounter = 0;
         log.info("Vehicle with id: {} has been removed", vehicleId);
         events.add(new VehicleRemoved(vehicleId));
 
         return events;
+    }
+
+    public void replay(VehicleCreated event) {
+        log.info("Replaying create vehicle event: {}", event.toString());
+        exists = true;
+        vehiclePositions.add(new AbsolutPosition(event.getStartPosition().x(), event.getStartPosition().y()));
+    }
+
+    public void replay(VehicleNewPosition event) {
+        log.info("Replaying move vehicle event: {}", event.toString());
+
+        AbsolutPosition newPosition = event.getPosition();
+        vehiclePositions.add(newPosition);
+        moveCounter++;
+    }
+
+    public void replay(VehicleRemoved event) {
+        log.info("Replaying move vehicle event: {}", event.toString());
+        exists = false;
+        vehiclePositions = new ArrayList<>();
+        moveCounter = 0;
     }
 
     // helper function to allow in memory repository to delete not existing aggregates.

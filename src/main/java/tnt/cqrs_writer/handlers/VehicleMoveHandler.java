@@ -37,7 +37,6 @@ public class VehicleMoveHandler implements CommandHandler<MoveVehicle> {
 
         try {
             List<BaseEvent> events = vehicle.apply(command);
-            vehicleRepository.updateVehicle(vehicle);
             log.info("Vehicle with ID: {} successfully moved and updated in repository.", command.name());
             return events;
         } catch (Exception e) {

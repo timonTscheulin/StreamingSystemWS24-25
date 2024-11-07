@@ -31,7 +31,6 @@ public class VehicleRemoveHandler implements CommandHandler<RemoveVehicle> {
 
         try {
             List<BaseEvent> events = vehicle.apply(command);
-            vehicleRepository.updateVehicle(vehicle);
             log.info("Vehicle with ID: {} successfully removed and updated in repository.", command.name());
             return events;
         } catch (Exception e) {

@@ -4,6 +4,7 @@ import org.reflections.Reflections;
 import tnt.cqrs_writer.commands.Command;
 import tnt.cqrs_writer.framework.events.BaseEvent;
 import tnt.cqrs_writer.handlers.CommandHandler;
+import tnt.eventstore.InMemoryEventStore;
 import tnt.eventstore.connectors.ActiveMQProducer;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
@@ -51,6 +52,7 @@ public class CommandDispatcher {
         // @todo implement transactions for write into event store
         List<BaseEvent> events = handler.handle(command);
         eventStore.storeEvent(events);
+        InMemoryEventStore.getInstance().store(events);
         // end of transaction
     }
 }

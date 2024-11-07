@@ -32,7 +32,6 @@ public class VehicleCreateHandler implements CommandHandler<CreateVehicle> {
         vehicle = new Vehicle(command.name());
         try {
             List<BaseEvent> events = vehicle.apply(command);
-            vehicleRepository.updateVehicle(vehicle);
             log.info("Vehicle with ID: {} successfully created and updated in repository.", command.name());
 
             return events;

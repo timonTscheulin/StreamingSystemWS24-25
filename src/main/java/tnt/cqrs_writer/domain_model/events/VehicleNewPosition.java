@@ -17,4 +17,12 @@ public class VehicleNewPosition implements BaseEvent {
     public StoreVehicleNewPosition toStoreEvent() {
         return new StoreVehicleNewPosition(vehicleId, position.x(), position.y());
     }
+    
+    public AbsolutPosition getPosition() {
+        return position;
+    }
+
+    public String vehicleId() {
+        return vehicleId;
+    }
 }
