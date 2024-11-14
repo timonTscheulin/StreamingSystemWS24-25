@@ -1,4 +1,4 @@
-package tnt.cqrs_reader;
+package tnt.cqrs_reader.service;
 
 import tnt.cqrs_reader.api.VehicleQueries;
 import tnt.cqrs_reader.dtos.VehicleDTO;

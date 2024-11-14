@@ -9,16 +9,13 @@ import tnt.cqrs_writer.domain_model.events.VehicleRemoved;
 import tnt.cqrs_writer.framework.events.BaseEvent;
 import tnt.eventstore.InMemoryEventStore;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 
 public class VehicleRepository {
     private static final Logger log = LoggerFactory.getLogger(VehicleRepository.class);
     private static VehicleRepository INSTANCE;
-    // private Map<String, Vehicle> aggregates = new HashMap<>();
 
     private VehicleRepository(){}
 
@@ -30,9 +27,6 @@ public class VehicleRepository {
     }
 
     public Vehicle getVehicle(String vehicleId) {
-        // bad pattern singeltons are hard to test
-        // use instead dependency injection per reflection
-
         Vehicle result = null;
 
         List<BaseEvent> events = InMemoryEventStore.getInstance().getEvents();
@@ -56,21 +50,6 @@ public class VehicleRepository {
                 log.warn("Unknown event type: {}", event.getClass().getName());
             }
         }
-
-        /*if (aggregates.containsKey(vehicleId)) {
-            result = aggregates.get(vehicleId);
-        }*/
-
         return result;
     }
-
-    /*public void updateVehicle(Vehicle vehicle) {
-
-         if (vehicle.exists()) {
-             aggregates.put(vehicle.getVehicleId(), vehicle);
-         }
-         else {
-             aggregates.remove(vehicle.getVehicleId());
-         }
-    }*/
 }

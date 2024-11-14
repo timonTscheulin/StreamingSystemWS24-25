@@ -2,7 +2,7 @@ package tnt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tnt.cqrs_reader.QueryInstance;
+import tnt.cqrs_reader.service.QueryInstance;
 import tnt.cqrs_reader.dtos.VehicleDTO;
 import tnt.cqrs_reader.dtypes.Position;
 import tnt.cqrs_writer.api.SimpleCommandsApi;
