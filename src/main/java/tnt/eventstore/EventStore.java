@@ -6,7 +6,7 @@ import tnt.cqrs_writer.framework.events.BaseEvent;
 import tnt.eventstore.connectors.EventStoreException;
 import tnt.eventstore.event_contract.BaseStoreEvent;
 
-import javax.jms.JMSException;
+import jakarta.jms.JMSException;
 import java.util.ArrayList;
 import java.util.List;
 

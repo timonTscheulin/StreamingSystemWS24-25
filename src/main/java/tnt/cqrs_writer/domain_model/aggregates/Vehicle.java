@@ -12,6 +12,7 @@ import tnt.cqrs_writer.domain_model.value_objects.AbsolutPosition;
 import tnt.cqrs_writer.framework.events.BaseEvent;
 
 import javax.management.InstanceAlreadyExistsException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;

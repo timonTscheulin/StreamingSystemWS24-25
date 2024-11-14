@@ -1,10 +1,8 @@
 package tnt.eventstore.connectors;
 
-import tnt.cqrs_writer.framework.events.BaseEvent;
 import tnt.eventstore.EventScope;
 import tnt.eventstore.event_contract.BaseStoreEvent;
 
-import javax.jms.JMSException;
 import java.util.List;
 
 public interface EventStoreConsumer {

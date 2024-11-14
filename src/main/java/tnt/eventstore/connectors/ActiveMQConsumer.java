@@ -1,13 +1,14 @@
 package tnt.eventstore.connectors;
 
+
+import jakarta.jms.*;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tnt.cqrs_writer.framework.events.BaseEvent;
+
 import tnt.eventstore.EventScope;
 import tnt.eventstore.event_contract.BaseStoreEvent;
 
-import javax.jms.*;
 import java.util.ArrayList;
 import java.util.List;
 
