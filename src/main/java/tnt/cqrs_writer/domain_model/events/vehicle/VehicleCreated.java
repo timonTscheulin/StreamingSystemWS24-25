@@ -1,10 +1,10 @@
-package tnt.cqrs_writer.domain_model.events;
+package tnt.cqrs_writer.domain_model.events.vehicle;
 
 import tnt.cqrs_writer.dtypes.PositionPoint;
-import tnt.cqrs_writer.framework.events.BaseEvent;
-import tnt.eventstore.event_contract.StoreVehicleCreated;
+import tnt.cqrs_writer.framework.events.DomainBaseEvent;
+import tnt.eventstore.event_contract.vehicle.StoreVehicleCreated;
 
-public class VehicleCreated implements BaseEvent {
+public class VehicleCreated implements DomainBaseEvent {
 
     private String vehicleId;
     private PositionPoint startPosition;

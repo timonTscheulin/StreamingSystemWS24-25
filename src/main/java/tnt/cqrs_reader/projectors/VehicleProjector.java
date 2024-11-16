@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 import tnt.cqrs_reader.query_repositories.VehicleRepository;
 import tnt.eventstore.connectors.ActiveMQConsumer;
 import tnt.eventstore.connectors.EventStoreConsumer;
-import tnt.eventstore.event_contract.BaseStoreEvent;
-import tnt.eventstore.event_contract.StoreVehicleCreated;
-import tnt.eventstore.event_contract.StoreVehicleRemoved;
+import tnt.eventstore.event_contract.StoreBaseEvent;
+import tnt.eventstore.event_contract.vehicle.StoreVehicleCreated;
+import tnt.eventstore.event_contract.vehicle.StoreVehicleRemoved;
 
 import java.util.List;
 
@@ -23,8 +23,8 @@ public class VehicleProjector extends BaseProjector {
     @Override
     public void project() {
         try {
-            List<BaseStoreEvent> events = store.getAllEvents();
-            for (BaseStoreEvent e : events) {
+            List<StoreBaseEvent> events = store.getAllEvents();
+            for (StoreBaseEvent e : events) {
                 if (e instanceof StoreVehicleCreated createdEvent) {
                     log.info("StoreVehicleCreated: {}", createdEvent);
                     process(createdEvent);
@@ -43,15 +43,15 @@ public class VehicleProjector extends BaseProjector {
 
     private void process(StoreVehicleCreated cmd) {
         // Logik für StoreVehicleCreated-Ereignisse
-        log.debug("Processing StoreVehicleCreated event for vehicle: {}", cmd.getId());
+        log.debug("Processing StoreVehicleCreated event for vehicle: {}", cmd.getVehicleId());
         // Weitere Logik zur Verarbeitung und Speicherung des Ereignisses im Repository
-        repository.createVehicle(cmd.getId(), cmd.getX(), cmd.getY());
+        repository.createVehicle(cmd.getVehicleId(), cmd.getX(), cmd.getY());
     }
 
     private void process(StoreVehicleRemoved cmd) {
         // Logik für StoreVehicleRemoved-Ereignisse
-        log.debug("Processing StoreVehicleRemoved event for vehicle: {}", cmd.getId());
+        log.debug("Processing StoreVehicleRemoved event for vehicle: {}", cmd.getVehicleId());
         // Weitere Logik zur Verarbeitung und Entfernung des Ereignisses im Repository
-        repository.deleteVehicle(cmd.getId());
+        repository.deleteVehicle(cmd.getVehicleId());
     }
 }

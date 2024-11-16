@@ -5,11 +5,11 @@ import org.slf4j.LoggerFactory;
 import tnt.cqrs_writer.commands.CreateVehicle;
 import tnt.cqrs_writer.commands.MoveVehicle;
 import tnt.cqrs_writer.commands.RemoveVehicle;
-import tnt.cqrs_writer.domain_model.events.VehicleCreated;
-import tnt.cqrs_writer.domain_model.events.VehicleNewPosition;
-import tnt.cqrs_writer.domain_model.events.VehicleRemoved;
+import tnt.cqrs_writer.domain_model.events.vehicle.VehicleCreated;
+import tnt.cqrs_writer.domain_model.events.vehicle.VehicleNewPosition;
+import tnt.cqrs_writer.domain_model.events.vehicle.VehicleRemoved;
 import tnt.cqrs_writer.domain_model.value_objects.AbsolutPosition;
-import tnt.cqrs_writer.framework.events.BaseEvent;
+import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 
 import javax.management.InstanceAlreadyExistsException;
 
@@ -32,18 +32,13 @@ public class Vehicle {
         log.info("Vehicle created with id: {}", vehicleId);
     }
 
-    public Vehicle(Vehicle vehicleToCopy) {
-        this.vehicleId = vehicleToCopy.getVehicleId();
-        log.info("Vehicle copied with id: {}", vehicleId);
-    }
-
     public String getVehicleId() {
         return vehicleId;
     }
 
-    public List<BaseEvent> apply(CreateVehicle command) throws InstanceAlreadyExistsException {
+    public List<DomainBaseEvent> apply(CreateVehicle command) throws InstanceAlreadyExistsException {
         log.debug("Applying CreateVehicle command for vehicle id: {}", vehicleId);
-        List<BaseEvent> events = new ArrayList<>();
+        List<DomainBaseEvent> events = new ArrayList<>();
 
         // validate by apply steps to aggregate
         if (!exists) {
@@ -62,9 +57,9 @@ public class Vehicle {
         return events;
     }
 
-    public List<BaseEvent> apply(MoveVehicle command) {
+    public List<DomainBaseEvent> apply(MoveVehicle command) {
         log.debug("Applying MoveVehicle command for vehicle id: {}", vehicleId);
-        List<BaseEvent> events = new ArrayList<>();
+        List<DomainBaseEvent> events = new ArrayList<>();
 
         if(!exists) {
             log.error("MoveVehicle command failed for vehicle id: {}. Vehicle does not exist.", vehicleId);
@@ -95,9 +90,9 @@ public class Vehicle {
         return events;
     }
 
-    public List<BaseEvent> apply(RemoveVehicle command) {
+    public List<DomainBaseEvent> apply(RemoveVehicle command) {
         log.debug("Applying RemoveVehicle command for vehicle id: {}", vehicleId);
-        List<BaseEvent> events = new ArrayList<>();
+        List<DomainBaseEvent> events = new ArrayList<>();
 
         if(!exists) {
             log.error("RemoveVehicle command failed for vehicle id: {}. Vehicle does not exist.", vehicleId);
@@ -128,7 +123,7 @@ public class Vehicle {
     }
 
     public void replay(VehicleRemoved event) {
-        log.info("Replaying move vehicle event: {}", event.toString());
+        log.info("Replaying remove vehicle event: {}", event.toString());
         exists = false;
         vehiclePositions = new ArrayList<>();
         moveCounter = 0;
@@ -138,4 +133,5 @@ public class Vehicle {
     public boolean exists() {
         return exists;
     }
+    public AbsolutPosition getCurrentPosition() {return this.vehiclePositions.getLast();};
 }

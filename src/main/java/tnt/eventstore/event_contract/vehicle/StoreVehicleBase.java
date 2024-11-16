@@ -1,14 +1,16 @@
-package tnt.eventstore.event_contract;
+package tnt.eventstore.event_contract.vehicle;
 
-public class StoreVehicleBase extends BaseStoreEvent {
+import tnt.eventstore.event_contract.StoreBaseEvent;
+
+public abstract class StoreVehicleBase extends StoreBaseEvent {
     private final String vehicleId;
 
     public StoreVehicleBase(String vehicleId) {
+        super();
         this.vehicleId = vehicleId;
     }
 
-    @Override
-    public String getId() {
+    public String getVehicleId() {
         return vehicleId;
     }
 

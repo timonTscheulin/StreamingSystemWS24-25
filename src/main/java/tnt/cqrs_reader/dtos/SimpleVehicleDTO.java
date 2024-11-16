@@ -15,7 +15,7 @@ public class SimpleVehicleDTO implements VehicleDTO {
 
     @Override
     public String getName() {
-        return toString();
+        return this.vehicleId;
     }
 
     @Override

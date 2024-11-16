@@ -1,30 +1,38 @@
 package tnt.eventstore;
 
-import tnt.cqrs_writer.domain_model.aggregates.VehiclePositionMap;
-import tnt.cqrs_writer.framework.events.BaseEvent;
+import tnt.cqrs_writer.domain_model.aggregates.Position;
+import tnt.cqrs_writer.framework.events.DomainBaseEvent;
+import tnt.eventstore.event_contract.StoreBaseEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryEventStore {
     private static InMemoryEventStore INSTANCE = null;
-    private List<BaseEvent> events = new ArrayList<>();
+    private List<StoreBaseEvent> events = new ArrayList<>();
 
     private InMemoryEventStore() {};
 
     public static InMemoryEventStore getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new InMemoryEventStore();
-            VehiclePositionMap vehiclePositionMap = new VehiclePositionMap();
+            Position vehiclePositionMap = new Position();
         }
         return INSTANCE;
     }
 
-    public void store(List<BaseEvent> events) {
-        this.events.addAll(events);
+    public void store(List<DomainBaseEvent> events) {
+        for (DomainBaseEvent event : events) {
+            StoreBaseEvent message = event.toStoreEvent();
+            this.events.add(message);
+        }
     }
 
-    public List<BaseEvent> getEvents() {
-        return events;
+    public List<DomainBaseEvent> getEvents() {
+        List<DomainBaseEvent> baseEvents = new ArrayList<>();
+        for (StoreBaseEvent event : events) {
+            baseEvents.add(event.toDomainEvent());
+        }
+        return baseEvents;
     }
 }

@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tnt.cqrs_writer.commands.MoveVehicle;
 import tnt.cqrs_writer.domain_model.aggregates.Vehicle;
-import tnt.cqrs_writer.domain_model.repositories.PositionMapRepository;
+import tnt.cqrs_writer.domain_model.repositories.PositionRepository;
 import tnt.cqrs_writer.domain_model.repositories.VehicleRepository;
 import tnt.cqrs_writer.framework.CommandHandlerOf;
-import tnt.cqrs_writer.framework.events.BaseEvent;
+import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 
 import javax.management.InstanceNotFoundException;
 import java.util.List;
@@ -16,10 +16,10 @@ import java.util.List;
 public class VehicleMoveHandler implements CommandHandler<MoveVehicle> {
     private static final Logger log = LoggerFactory.getLogger(VehicleMoveHandler.class);
     private final VehicleRepository vehicleRepository = VehicleRepository.getInstance();
-    private final PositionMapRepository positionMapRepository = PositionMapRepository.getInstance();
+    private final PositionRepository positionMapRepository = PositionRepository.getInstance();
 
     @Override
-    public List<BaseEvent> handle(MoveVehicle command) throws InstanceNotFoundException {
+    public List<DomainBaseEvent> handle(MoveVehicle command) throws InstanceNotFoundException {
 
         // simple gatekeeper to prevent unnecessary aggregate loads, if trivial properties contain wrong values.
         if (command.deltaPosition().isZero()) {
@@ -30,13 +30,13 @@ public class VehicleMoveHandler implements CommandHandler<MoveVehicle> {
 
         Vehicle vehicle = vehicleRepository.getVehicle(command.name());
 
-        if (vehicle == null) {
+        if (!vehicle.exists()) {
             log.error("Vehicle with ID: {} not exists. Cannot move vehicle", command.name());
             throw new InstanceNotFoundException("Vehicle with ID " + command.name() + "not exists");
         }
 
         try {
-            List<BaseEvent> events = vehicle.apply(command);
+            List<DomainBaseEvent> events = vehicle.apply(command);
             log.info("Vehicle with ID: {} successfully moved and updated in repository.", command.name());
             return events;
         } catch (Exception e) {

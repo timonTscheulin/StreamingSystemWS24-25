@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory;
 import tnt.cqrs_reader.query_repositories.VehiclePositionRepository;
 import tnt.eventstore.connectors.ActiveMQConsumer;
 import tnt.eventstore.connectors.EventStoreConsumer;
-import tnt.eventstore.event_contract.BaseStoreEvent;
-import tnt.eventstore.event_contract.StoreVehicleCreated;
-import tnt.eventstore.event_contract.StoreVehicleNewPosition;
-import tnt.eventstore.event_contract.StoreVehicleRemoved;
+import tnt.eventstore.event_contract.StoreBaseEvent;
+import tnt.eventstore.event_contract.vehicle.StoreVehicleCreated;
+import tnt.eventstore.event_contract.vehicle.StoreVehicleNewPosition;
+import tnt.eventstore.event_contract.vehicle.StoreVehicleRemoved;
 
 import java.util.List;
 
@@ -25,8 +25,8 @@ public class VehicleByPositionProjector extends BaseProjector {
     @Override
     public void project() {
         try {
-            List<BaseStoreEvent> events = store.getAllEvents();
-            for (BaseStoreEvent e : events) {
+            List<StoreBaseEvent> events = store.getAllEvents();
+            for (StoreBaseEvent e : events) {
                 if (e instanceof StoreVehicleCreated createdEvent) {
                     log.info("StoreVehicleCreated: {}", createdEvent);
                     process(createdEvent);
@@ -47,14 +47,14 @@ public class VehicleByPositionProjector extends BaseProjector {
     }
 
     private void process(StoreVehicleCreated cmd) {
-        repository.add(cmd.getId(), cmd.getX(), cmd.getY());
+        repository.add(cmd.getVehicleId(), cmd.getX(), cmd.getY());
     }
 
     private void process(StoreVehicleRemoved cmd) {
-        repository.remove(cmd.getId());
+        repository.remove(cmd.getVehicleId());
     }
 
     private void process(StoreVehicleNewPosition cmd) {
-        repository.move(cmd.getId(), cmd.getX(), cmd.getY());
+        repository.move(cmd.getVehicleId(), cmd.getX(), cmd.getY());
     }
 }

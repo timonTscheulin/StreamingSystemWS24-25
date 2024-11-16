@@ -1,5 +1,7 @@
-package tnt.eventstore.event_contract;
+package tnt.eventstore.event_contract.vehicle;
 
+import tnt.cqrs_writer.domain_model.events.vehicle.VehicleNewPosition;
+import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 import tnt.eventstore.event_contract.types.AbsolutPoint;
 
 public class StoreVehicleNewPosition extends StoreVehicleBase {
@@ -18,4 +20,8 @@ public class StoreVehicleNewPosition extends StoreVehicleBase {
         return newPosition.y();
     }
 
+    @Override
+    public DomainBaseEvent toDomainEvent() {
+        return new VehicleNewPosition(getVehicleId(), getX(), getY());
+    }
 }

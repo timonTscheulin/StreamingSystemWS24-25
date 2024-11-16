@@ -3,12 +3,10 @@ package tnt.eventstore.connectors;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tnt.cqrs_writer.framework.events.BaseEvent;
-import tnt.eventstore.EventScope;
-import tnt.eventstore.event_contract.BaseStoreEvent;
+import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 
 import jakarta.jms.*;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class ActiveMQProducer implements EventStoreProducer {
@@ -42,10 +40,10 @@ public class ActiveMQProducer implements EventStoreProducer {
 
 
     @Override
-    public void storeEvent(List<BaseEvent> events) throws EventStoreException, JMSException {
+    public void storeEvent(List<DomainBaseEvent> events) throws EventStoreException, JMSException {
         try {
             log.info("Starting to store events in broker {}", defaultBrokerUrl);
-            for (BaseEvent event : events) {
+            for (DomainBaseEvent event : events) {
                 ObjectMessage message = session.createObjectMessage(event.toStoreEvent());
                 producer.send(message);
                 log.debug("Event sent: {}", event);

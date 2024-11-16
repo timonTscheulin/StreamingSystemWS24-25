@@ -2,7 +2,7 @@ package tnt.cqrs_writer.framework;
 
 import org.reflections.Reflections;
 import tnt.cqrs_writer.commands.Command;
-import tnt.cqrs_writer.framework.events.BaseEvent;
+import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 import tnt.cqrs_writer.handlers.CommandHandler;
 import tnt.eventstore.InMemoryEventStore;
 import tnt.eventstore.connectors.ActiveMQProducer;
@@ -50,7 +50,7 @@ public class CommandDispatcher {
         }
 
         // @todo implement transactions for write into event store
-        List<BaseEvent> events = handler.handle(command);
+        List<DomainBaseEvent> events = handler.handle(command);
         eventStore.storeEvent(events);
         InMemoryEventStore.getInstance().store(events);
         // end of transaction

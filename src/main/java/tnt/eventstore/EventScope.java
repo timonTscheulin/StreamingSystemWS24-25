@@ -1,19 +1,19 @@
 package tnt.eventstore;
 
-import tnt.eventstore.event_contract.BaseStoreEvent;
+import tnt.eventstore.event_contract.StoreBaseEvent;
 
 import java.util.Objects;
 
 public class EventScope {
-    private final Class<? extends BaseStoreEvent> eventType;
+    private final Class<? extends StoreBaseEvent> eventType;
     private final String id;
 
-    public EventScope(Class<? extends BaseStoreEvent> eventType, String id) {
+    public EventScope(Class<? extends StoreBaseEvent> eventType, String id) {
         this.eventType = eventType;
         this.id = id;
     }
 
-    public Class<? extends BaseStoreEvent> getEventType() {
+    public Class<? extends StoreBaseEvent> getEventType() {
         return eventType;
     }
 

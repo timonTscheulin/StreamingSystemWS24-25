@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import tnt.eventstore.EventScope;
-import tnt.eventstore.event_contract.BaseStoreEvent;
+import tnt.eventstore.event_contract.StoreBaseEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +41,15 @@ public class ActiveMQConsumer implements EventStoreConsumer {
     }
 
     @Override
-    public List<BaseStoreEvent> getAllEvents() throws EventStoreException {
-        List<BaseStoreEvent> events = new ArrayList<>();
+    public List<StoreBaseEvent> getAllEvents() throws EventStoreException {
+        List<StoreBaseEvent> events = new ArrayList<>();
         try {
             log.debug("Attempting to read events from broker {}", defaultBrokerUrl);
             Message message;
             do {
                 message = consumer.receive(5000); // 5 Sekunden Timeout
                 if (message instanceof ObjectMessage objectMessage) {
-                    events.add((BaseStoreEvent) objectMessage.getObject());
+                    events.add((StoreBaseEvent) objectMessage.getObject());
                     log.debug("Received event: {}", objectMessage);
                 }
             } while (message != null);
@@ -61,11 +61,11 @@ public class ActiveMQConsumer implements EventStoreConsumer {
         return events;
     }
 
-    @Override
-    public List<BaseStoreEvent> fetchEventsByScope(EventScope scope) throws EventStoreException {
-        List<BaseStoreEvent> events = getAllEvents();
+    /*@Override
+    public List<StoreBaseEvent> fetchEventsByScope(EventScope scope) throws EventStoreException {
+        List<StoreBaseEvent> events = getAllEvents();
         return events.stream()
-                .filter(event -> event.getClass().equals(scope.getEventType()) && event.getId().equals(scope.getId()))
+                .filter(event -> event.getClass().equals(scope.getEventType()) && event.getVehicleId().equals(scope.getId()))
                 .toList();
-    }
+    }*/
 }

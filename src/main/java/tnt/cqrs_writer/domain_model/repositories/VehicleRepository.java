@@ -3,10 +3,10 @@ package tnt.cqrs_writer.domain_model.repositories;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tnt.cqrs_writer.domain_model.aggregates.Vehicle;
-import tnt.cqrs_writer.domain_model.events.VehicleCreated;
-import tnt.cqrs_writer.domain_model.events.VehicleNewPosition;
-import tnt.cqrs_writer.domain_model.events.VehicleRemoved;
-import tnt.cqrs_writer.framework.events.BaseEvent;
+import tnt.cqrs_writer.domain_model.events.vehicle.VehicleCreated;
+import tnt.cqrs_writer.domain_model.events.vehicle.VehicleNewPosition;
+import tnt.cqrs_writer.domain_model.events.vehicle.VehicleRemoved;
+import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 import tnt.eventstore.InMemoryEventStore;
 
 import java.util.List;
@@ -27,23 +27,26 @@ public class VehicleRepository {
     }
 
     public Vehicle getVehicle(String vehicleId) {
-        Vehicle result = null;
+        Vehicle result = new Vehicle(vehicleId);;
 
-        List<BaseEvent> events = InMemoryEventStore.getInstance().getEvents();
-        for (BaseEvent event : events) {
+        List<DomainBaseEvent> events = InMemoryEventStore.getInstance().getEvents();
+        for (DomainBaseEvent event : events) {
             if (event instanceof VehicleCreated createdEvent) {
                 if(Objects.equals(createdEvent.vehicleId(), vehicleId)) {
-                    if (result == null) {
-                        result = new Vehicle(vehicleId);
-                    }
+                    log.debug("Replay of vehicle {} created", vehicleId);
+                    // if (result == null) {
+                    //    result = new Vehicle(vehicleId);
+                    //}
                     result.replay(createdEvent);
                 }
             } else if (event instanceof VehicleNewPosition newPositionEvent) {
                 if(Objects.equals(newPositionEvent.vehicleId(), vehicleId) & result != null) {
+                    log.debug("Replay of vehicle {} moved", vehicleId);
                     result.replay(newPositionEvent);
                 }
             } else if (event instanceof VehicleRemoved removedEvent) {
                 if(Objects.equals(removedEvent.vehicleId(), vehicleId)& result != null) {
+                    log.debug("Replay of vehicle {} removed", vehicleId);
                     result.replay(removedEvent);
                 }
             } else {
