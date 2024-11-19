@@ -1,10 +1,11 @@
 package tnt.cqrs_writer.domain_model.aggregates;
 
-import tnt.cqrs_writer.commands.CreateVehicle;
-import tnt.cqrs_writer.commands.MoveVehicle;
-import tnt.cqrs_writer.commands.RemoveVehicle;
+import tnt.cqrs_writer.domain_model.events.position.PositionOccupied;
+import tnt.cqrs_writer.domain_model.events.position.PositionReleased;
+import tnt.cqrs_writer.domain_model.value_objects.AbsolutPosition;
 import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Position {
@@ -12,16 +13,30 @@ public class Position {
      * and allow check if two vehicles collide by a move command or not.
      */
     private String position;
+    private AbsolutPosition coordinates;
+    private boolean isOccupied = false;
 
-    public List<DomainBaseEvent> apply(CreateVehicle command) {
-        return null;
+    public List<DomainBaseEvent> occupyPosition() {
+        if (!isOccupied) {
+            isOccupied = true;
+            List<DomainBaseEvent> events = new ArrayList<>();
+            AbsolutPosition copyCoordinates = new AbsolutPosition(this.coordinates.x(), this.coordinates.y());
+            events.add(new PositionOccupied(copyCoordinates));
+            return events;
+        } else {
+            throw new IllegalStateException("Position is occupied and cannot be occupied again.");
+        }
     }
 
-    public List<DomainBaseEvent> apply(MoveVehicle command) {
-        return null;
-    }
-
-    public List<DomainBaseEvent> apply(RemoveVehicle command) {
-        return null;
+    public List<DomainBaseEvent> releasePosition() {
+        if (isOccupied) {
+            isOccupied = false;
+            List<DomainBaseEvent> events = new ArrayList<>();
+            AbsolutPosition copyCoordinates = new AbsolutPosition(this.coordinates.x(), this.coordinates.y());
+            events.add(new PositionReleased(copyCoordinates));
+            return events;
+        } else {
+            throw new IllegalStateException("Position is not occupied and cannot be released.");
+        }
     }
 }

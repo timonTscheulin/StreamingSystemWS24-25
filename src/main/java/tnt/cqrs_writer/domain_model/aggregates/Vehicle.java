@@ -1,11 +1,13 @@
 package tnt.cqrs_writer.domain_model.aggregates;
 
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tnt.cqrs_writer.commands.CreateVehicle;
 import tnt.cqrs_writer.commands.MoveVehicle;
 import tnt.cqrs_writer.commands.RemoveVehicle;
 import tnt.cqrs_writer.domain_model.events.vehicle.VehicleCreated;
+import tnt.cqrs_writer.domain_model.events.vehicle.VehicleHasReachedMovementLimit;
 import tnt.cqrs_writer.domain_model.events.vehicle.VehicleNewPosition;
 import tnt.cqrs_writer.domain_model.events.vehicle.VehicleRemoved;
 import tnt.cqrs_writer.domain_model.value_objects.AbsolutPosition;
@@ -22,6 +24,7 @@ public class Vehicle {
      * event creation as a single logical unit.
      */
     private static final Logger log = LoggerFactory.getLogger(Vehicle.class);
+    @Getter
     private String vehicleId;
     private List<AbsolutPosition> vehiclePositions = new ArrayList<>();
     private int moveCounter = 0;
@@ -32,18 +35,26 @@ public class Vehicle {
         log.info("Vehicle created with id: {}", vehicleId);
     }
 
-    public String getVehicleId() {
-        return vehicleId;
+    public List<DomainBaseEvent> apply(CreateVehicle command) throws InstanceAlreadyExistsException {
+        return createVehicle(command.startPosition().x(), command.startPosition().y());
     }
 
-    public List<DomainBaseEvent> apply(CreateVehicle command) throws InstanceAlreadyExistsException {
+    public List<DomainBaseEvent> apply(MoveVehicle command) {
+        return moveVehicle(command.deltaPosition().x(), command.deltaPosition().y());
+    }
+
+    public List<DomainBaseEvent> apply(RemoveVehicle command) {
+        return this.removeVehicle();
+    }
+
+    public List<DomainBaseEvent> createVehicle(int start_x, int start_y) throws InstanceAlreadyExistsException {
         log.debug("Applying CreateVehicle command for vehicle id: {}", vehicleId);
         List<DomainBaseEvent> events = new ArrayList<>();
 
         // validate by apply steps to aggregate
         if (!exists) {
             exists = true;
-            vehiclePositions.add(new AbsolutPosition(command.startPosition().x(), command.startPosition().y()));
+            vehiclePositions.add(new AbsolutPosition(start_x, start_y));
             log.info("Vehicle created with id: {} at position: {}", vehicleId, vehiclePositions.getFirst());
         }
         else {
@@ -52,12 +63,13 @@ public class Vehicle {
         }
 
         // add event if no error was thrown
-        events.add(new VehicleCreated(vehicleId, command.startPosition().x(), command.startPosition().y()));
+        events.add(new VehicleCreated(vehicleId, start_x, start_y));
 
         return events;
     }
 
-    public List<DomainBaseEvent> apply(MoveVehicle command) {
+
+    public List<DomainBaseEvent> moveVehicle(int delta_x, int delta_y) {
         log.debug("Applying MoveVehicle command for vehicle id: {}", vehicleId);
         List<DomainBaseEvent> events = new ArrayList<>();
 
@@ -68,16 +80,20 @@ public class Vehicle {
 
         // solves task 3.1
         if(moveCounter + 1 >= 20) {
-            return this.apply(new RemoveVehicle(vehicleId));
+            //return this.apply(new RemoveVehicle(vehicleId));
+            events.add(new VehicleHasReachedMovementLimit(vehicleId));
+            return events;
         }
 
-        int newAbsX = vehiclePositions.getLast().x() + command.deltaPosition().x();
-        int newAbsY = vehiclePositions.getLast().y() + command.deltaPosition().y();
+        int newAbsX = vehiclePositions.getLast().x() + delta_x;
+        int newAbsY = vehiclePositions.getLast().y() + delta_y;
         AbsolutPosition newPosition = new AbsolutPosition(newAbsX, newAbsY);
 
         // solves task 3.2
         if (vehiclePositions.contains(newPosition)) {
-            return this.apply(new RemoveVehicle(vehicleId));
+            // return this.apply(new RemoveVehicle(vehicleId));
+            events.add(new VehicleHasReachedMovementLimit(vehicleId));
+            return events;
         }
 
         vehiclePositions.add(newPosition);
@@ -90,7 +106,9 @@ public class Vehicle {
         return events;
     }
 
-    public List<DomainBaseEvent> apply(RemoveVehicle command) {
+
+    public List<DomainBaseEvent> removeVehicle() {
+
         log.debug("Applying RemoveVehicle command for vehicle id: {}", vehicleId);
         List<DomainBaseEvent> events = new ArrayList<>();
 
