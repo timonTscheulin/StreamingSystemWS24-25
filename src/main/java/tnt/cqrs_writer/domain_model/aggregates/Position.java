@@ -11,6 +11,7 @@ public class Position {
     /* This aggregate is a helper aggregate which stores meta information about the position of each vehicle on a map
      * and allow check if two vehicles collide by a move command or not.
      */
+    private String position;
 
     public List<DomainBaseEvent> apply(CreateVehicle command) {
         return null;
