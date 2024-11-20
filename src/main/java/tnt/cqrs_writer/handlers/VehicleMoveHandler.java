@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tnt.cqrs_writer.commands.MoveVehicle;
 import tnt.cqrs_writer.domain_model.aggregates.Vehicle;
+import tnt.cqrs_writer.domain_model.aggregates.VehicleManager;
 import tnt.cqrs_writer.domain_model.repositories.PositionRepository;
 import tnt.cqrs_writer.domain_model.repositories.VehicleRepository;
 import tnt.cqrs_writer.framework.CommandHandlerOf;
@@ -28,15 +29,16 @@ public class VehicleMoveHandler implements CommandHandler<MoveVehicle> {
 
         log.debug("Handling MoveVehicle command for vehicle ID: {}", command.name());
 
-        Vehicle vehicle = vehicleRepository.getVehicle(command.name());
+        /* Vehicle vehicle = vehicleRepository.getVehicle(command.name());
 
         if (!vehicle.exists()) {
             log.error("Vehicle with ID: {} not exists. Cannot move vehicle", command.name());
             throw new InstanceNotFoundException("Vehicle with ID " + command.name() + "not exists");
-        }
+        }*/
+        VehicleManager manager = new VehicleManager(vehicleRepository, positionMapRepository);
 
         try {
-            List<DomainBaseEvent> events = vehicle.apply(command);
+            List<DomainBaseEvent> events = manager.apply(command);
             log.info("Vehicle with ID: {} successfully moved and updated in repository.", command.name());
             return events;
         } catch (Exception e) {

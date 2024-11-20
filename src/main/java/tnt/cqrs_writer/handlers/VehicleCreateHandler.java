@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tnt.cqrs_writer.commands.CreateVehicle;
 import tnt.cqrs_writer.domain_model.aggregates.Vehicle;
+import tnt.cqrs_writer.domain_model.aggregates.VehicleManager;
 import tnt.cqrs_writer.domain_model.repositories.PositionRepository;
 import tnt.cqrs_writer.domain_model.repositories.VehicleRepository;
 import tnt.cqrs_writer.framework.CommandHandlerOf;
@@ -22,7 +23,7 @@ public class VehicleCreateHandler implements CommandHandler<CreateVehicle> {
     public List<DomainBaseEvent> handle(CreateVehicle command) throws InstanceAlreadyExistsException {
         log.debug("Handling CreateVehicle command for vehicle ID: {}", command.name());
 
-        Vehicle vehicle = vehicleRepository.getVehicle(command.name());
+        /*Vehicle vehicle = vehicleRepository.getVehicle(command.name());
 
         if (vehicle == null) {
             log.error("Inconsistent repository state. Something realy bad was happened at command {}.", command.name());
@@ -34,9 +35,12 @@ public class VehicleCreateHandler implements CommandHandler<CreateVehicle> {
             throw new InstanceAlreadyExistsException("Vehicle with ID " + command.name() + " already exists.");
         }
 
-        vehicle = new Vehicle(command.name());
+        vehicle = new Vehicle(command.name());*/
+
+        VehicleManager manager = new VehicleManager(vehicleRepository, positionMapRepository);
         try {
-            List<DomainBaseEvent> events = vehicle.apply(command);
+            //List<DomainBaseEvent> events = vehicle.apply(command);
+            List<DomainBaseEvent> events = manager.apply(command);
             log.info("Vehicle with ID: {} successfully created and updated in repository.", command.name());
 
             return events;

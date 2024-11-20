@@ -1,11 +1,13 @@
 package tnt.cqrs_writer.domain_model.events.position;
 
+import lombok.Getter;
 import tnt.cqrs_writer.domain_model.value_objects.AbsolutPosition;
 import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 import tnt.eventstore.event_contract.StoreBaseEvent;
 import tnt.eventstore.event_contract.position.StorePositionReleased;
 
 public class PositionReleased implements DomainBaseEvent {
+    @Getter
     private AbsolutPosition position;
 
     public PositionReleased(AbsolutPosition position) {

@@ -35,18 +35,6 @@ public class Vehicle {
         log.info("Vehicle created with id: {}", vehicleId);
     }
 
-    public List<DomainBaseEvent> apply(CreateVehicle command) throws InstanceAlreadyExistsException {
-        return createVehicle(command.startPosition().x(), command.startPosition().y());
-    }
-
-    public List<DomainBaseEvent> apply(MoveVehicle command) {
-        return moveVehicle(command.deltaPosition().x(), command.deltaPosition().y());
-    }
-
-    public List<DomainBaseEvent> apply(RemoveVehicle command) {
-        return this.removeVehicle();
-    }
-
     public List<DomainBaseEvent> createVehicle(int start_x, int start_y) throws InstanceAlreadyExistsException {
         log.debug("Applying CreateVehicle command for vehicle id: {}", vehicleId);
         List<DomainBaseEvent> events = new ArrayList<>();

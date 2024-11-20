@@ -1,5 +1,6 @@
 package tnt.cqrs_writer.domain_model.aggregates;
 
+import lombok.Getter;
 import tnt.cqrs_writer.domain_model.events.position.PositionOccupied;
 import tnt.cqrs_writer.domain_model.events.position.PositionReleased;
 import tnt.cqrs_writer.domain_model.value_objects.AbsolutPosition;
@@ -12,16 +13,24 @@ public class Position {
     /* This aggregate is a helper aggregate which stores meta information about the position of each vehicle on a map
      * and allow check if two vehicles collide by a move command or not.
      */
-    private String position;
     private AbsolutPosition coordinates;
+    @Getter
     private boolean isOccupied = false;
+    @Getter
+    private String occupiedByVehicle = null;
 
-    public List<DomainBaseEvent> occupyPosition() {
+    public Position(AbsolutPosition position) {
+        coordinates = position;
+    }
+
+
+    public List<DomainBaseEvent> occupyPosition(String vehicleId) {
         if (!isOccupied) {
             isOccupied = true;
+            occupiedByVehicle = vehicleId;
             List<DomainBaseEvent> events = new ArrayList<>();
             AbsolutPosition copyCoordinates = new AbsolutPosition(this.coordinates.x(), this.coordinates.y());
-            events.add(new PositionOccupied(copyCoordinates));
+            events.add(new PositionOccupied(occupiedByVehicle, copyCoordinates));
             return events;
         } else {
             throw new IllegalStateException("Position is occupied and cannot be occupied again.");
@@ -31,6 +40,7 @@ public class Position {
     public List<DomainBaseEvent> releasePosition() {
         if (isOccupied) {
             isOccupied = false;
+            occupiedByVehicle = null;
             List<DomainBaseEvent> events = new ArrayList<>();
             AbsolutPosition copyCoordinates = new AbsolutPosition(this.coordinates.x(), this.coordinates.y());
             events.add(new PositionReleased(copyCoordinates));
@@ -38,5 +48,15 @@ public class Position {
         } else {
             throw new IllegalStateException("Position is not occupied and cannot be released.");
         }
+    }
+
+    public void replay(PositionOccupied event) {
+        occupiedByVehicle = event.getOccupationId();
+        isOccupied = true;
+    }
+
+    public void replay(PositionReleased event) {
+        occupiedByVehicle = null;
+        isOccupied = true;
     }
 }

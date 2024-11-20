@@ -16,7 +16,6 @@ public class InMemoryEventStore {
     public static InMemoryEventStore getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new InMemoryEventStore();
-            Position vehiclePositionMap = new Position();
         }
         return INSTANCE;
     }

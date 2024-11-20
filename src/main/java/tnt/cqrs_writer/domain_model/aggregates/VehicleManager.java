@@ -23,7 +23,7 @@ public class VehicleManager {
      */
 
 
-    // do we need some were a check if vehicle exists. check the logic of the aggregates again.
+    // do we need some were a check if vehicle exists? check the logic of the aggregates again.
     private final PositionRepository positionRepository;
     private final VehicleRepository vehicleRepository;
 
@@ -41,7 +41,7 @@ public class VehicleManager {
         // validate new vehicle target position
         AbsolutPosition vehicleTargetPosition = vehicle.getCurrentPosition();
         Position targetPosition = positionRepository.getPosition(vehicleTargetPosition);
-        events.addAll(targetPosition.occupyPosition());
+        events.addAll(targetPosition.occupyPosition(vehicle.getVehicleId()));
 
         return events;
     }
@@ -54,22 +54,30 @@ public class VehicleManager {
         AbsolutPosition vehicleOldPosition = vehicle.getCurrentPosition();
         events.addAll(vehicle.moveVehicle(command.deltaPosition().x(), command.deltaPosition().y()));
 
-        //check vehicle still exist.
+        //check vehicle has reached limits.
         if (containsEventOfType(events, VehicleHasReachedMovementLimit.class)
                 || containsEventOfType(events, VehicleHasVisitedPositionAgain.class))
         {
             Position oldPosition = positionRepository.getPosition(vehicleOldPosition);
             events.addAll(oldPosition.releasePosition());
             events.addAll(vehicle.removeVehicle());
+            return events;
         }
-        else {
-            AbsolutPosition vehicleTargetPosition = vehicle.getCurrentPosition();
-            Position oldPosition = positionRepository.getPosition(vehicleOldPosition);
-            Position targetPosition = positionRepository.getPosition(vehicleTargetPosition);
 
-            events.addAll(oldPosition.releasePosition());
-            events.addAll(targetPosition.occupyPosition());
+        AbsolutPosition vehicleTargetPosition = vehicle.getCurrentPosition();
+        Position oldPosition = positionRepository.getPosition(vehicleOldPosition);
+        Position targetPosition = positionRepository.getPosition(vehicleTargetPosition);
+
+        // check target is occupied by other vehicle
+        if (targetPosition.isOccupied()) {
+            String conflictVehicleId = targetPosition.getOccupiedByVehicle();
+            Vehicle conflictVehicle = vehicleRepository.getVehicle(conflictVehicleId);
+            events.addAll(conflictVehicle.removeVehicle());
+            events.addAll(targetPosition.releasePosition());
         }
+
+        events.addAll(oldPosition.releasePosition());
+        events.addAll(targetPosition.occupyPosition(vehicle.getVehicleId()));
         return events;
     }
 
@@ -77,10 +85,10 @@ public class VehicleManager {
         List<DomainBaseEvent> events = new ArrayList<>();
         // validate vehicle remove command
         Vehicle vehicle = vehicleRepository.getVehicle(command.name());
+        AbsolutPosition vehicleTargetPosition = vehicle.getCurrentPosition();
         events.addAll(vehicle.removeVehicle());
 
         // delete vehicle on current destination
-        AbsolutPosition vehicleTargetPosition = vehicle.getCurrentPosition();
         Position targetPosition = positionRepository.getPosition(vehicleTargetPosition);
         events.addAll(targetPosition.releasePosition());
         return events;
