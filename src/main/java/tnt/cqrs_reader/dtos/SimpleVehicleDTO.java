@@ -7,10 +7,10 @@ public class SimpleVehicleDTO implements VehicleDTO {
     private String vehicleId;
     private int moves;
 
-    public SimpleVehicleDTO(String vehicleId, int x, int y ) {
+    public SimpleVehicleDTO(String vehicleId, int x, int y, int moves) {
         position = new Position(x, y);
         this.vehicleId = vehicleId;
-        moves = 0;
+        this.moves = moves;
     }
 
     @Override

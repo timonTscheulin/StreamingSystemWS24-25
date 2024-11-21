@@ -57,6 +57,6 @@ public class Position {
 
     public void replay(PositionReleased event) {
         occupiedByVehicle = null;
-        isOccupied = true;
+        isOccupied = false;
     }
 }

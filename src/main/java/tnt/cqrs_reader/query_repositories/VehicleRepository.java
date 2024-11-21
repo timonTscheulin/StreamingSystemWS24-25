@@ -16,7 +16,7 @@ public class VehicleRepository implements BaseRepositories {
 
     public synchronized void createVehicle(String vehicleId, int x, int y) {
         log.debug("Creating vehicle {} with x={} y={}", vehicleId, x, y);
-        VehicleDTO vehicle = new SimpleVehicleDTO(vehicleId, x, y);
+        VehicleDTO vehicle = new SimpleVehicleDTO(vehicleId, x, y, 0);
         availableVehicles.put(vehicleId, vehicle);
     }
 
@@ -33,5 +33,13 @@ public class VehicleRepository implements BaseRepositories {
     public synchronized List<VehicleDTO> getAllVehicles() {
         log.debug("Retrieving all vehicles");
         return new ArrayList<>(availableVehicles.values());
+    }
+
+    public synchronized void moveVehicle(String vehicleId, int x, int y) {
+        log.debug("Moving vehicle {} with x={} y={}", vehicleId, x, y);
+        VehicleDTO vehicle = availableVehicles.get(vehicleId);
+        int newMoves  = vehicle.getNumberOfMoves() + 1;
+        VehicleDTO updatedVehicle =  new SimpleVehicleDTO(vehicleId, x,y, newMoves);
+        availableVehicles.put(vehicleId, updatedVehicle);
     }
 }

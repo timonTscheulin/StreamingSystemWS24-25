@@ -14,7 +14,7 @@ public class VehiclePositionRepository implements BaseRepositories {
 
     public synchronized void add(String vehicleId, int x, int y) {
         if ( !vehiclesByName.containsKey(vehicleId) ) {
-            VehicleDTO vehicle = new SimpleVehicleDTO(vehicleId, x, y);
+            VehicleDTO vehicle = new SimpleVehicleDTO(vehicleId, x, y,0);
             vehiclesByName.put(vehicleId, vehicle);
 
             if ( !vehiclesByPosition.containsKey(x + "_" + y)) {

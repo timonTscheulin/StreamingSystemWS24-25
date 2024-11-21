@@ -34,7 +34,7 @@ public class VehicleByPositionProjector extends BaseProjector {
                     log.info("StoreVehicleRemoved: {}", removedEvent);
                     process(removedEvent);
                 } else if (e instanceof StoreVehicleNewPosition newPositionEvent) {
-                    log.info("StoreVehicleNewPosition");
+                    log.info("StoreVehicleNewPosition x:{} y:{}", newPositionEvent.getX(), newPositionEvent.getY());
                     process(newPositionEvent);
                 }else {
                     log.warn("Unknown event received of type: {}", e.getClass());

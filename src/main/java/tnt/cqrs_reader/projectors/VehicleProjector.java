@@ -7,6 +7,7 @@ import tnt.eventstore.connectors.ActiveMQConsumer;
 import tnt.eventstore.connectors.EventStoreConsumer;
 import tnt.eventstore.event_contract.StoreBaseEvent;
 import tnt.eventstore.event_contract.vehicle.StoreVehicleCreated;
+import tnt.eventstore.event_contract.vehicle.StoreVehicleNewPosition;
 import tnt.eventstore.event_contract.vehicle.StoreVehicleRemoved;
 
 import java.util.List;
@@ -31,6 +32,9 @@ public class VehicleProjector extends BaseProjector {
                 } else if (e instanceof StoreVehicleRemoved removedEvent) {
                     log.info("StoreVehicleRemoved: {}", removedEvent);
                     process(removedEvent);
+                } else if (e instanceof StoreVehicleNewPosition newPositionEvent) {
+                    log.info("StoreVehicleNewPosition: {}", newPositionEvent);
+                    process(newPositionEvent);
                 } else {
                     log.warn("Unknown event received of type: {}", e.getClass());
                 }
@@ -53,5 +57,10 @@ public class VehicleProjector extends BaseProjector {
         log.debug("Processing StoreVehicleRemoved event for vehicle: {}", cmd.getVehicleId());
         // Weitere Logik zur Verarbeitung und Entfernung des Ereignisses im Repository
         repository.deleteVehicle(cmd.getVehicleId());
+    }
+
+    private void process(StoreVehicleNewPosition cmd) {
+        log.debug("Processing StoreVehicleNewPosition event for vehicle: {}", cmd.getVehicleId());
+        repository.moveVehicle(cmd.getVehicleId(), cmd.getX(), cmd.getY());
     }
 }

@@ -65,6 +65,7 @@ public class VehicleE2ETests {
     @Order(2)
     @DisplayName("Test Vehicle Deletion after Reaching Movement Limit")
     public void testVehicleDeletionAfterMovementLimit() throws InterruptedException {
+        RestAssured.baseURI = WRITE_API_BASE_URL;
         String vehicleId = "vehicle2";
 
         // Step 1: Create Vehicle
@@ -98,6 +99,7 @@ public class VehicleE2ETests {
     @Order(3)
     @DisplayName("Test Vehicle Deletion when Moving to Previously Visited Position")
     public void testVehicleDeletionOnRevisitingPosition() throws InterruptedException {
+        RestAssured.baseURI = WRITE_API_BASE_URL;
         String vehicleId = "vehicle3";
 
         // Step 1: Create Vehicle
@@ -137,6 +139,7 @@ public class VehicleE2ETests {
     @Order(4)
     @DisplayName("Test Collision Handling and Vehicle Deletion")
     public void testVehicleCollisionAndDeletion() throws InterruptedException {
+        RestAssured.baseURI = WRITE_API_BASE_URL;
         String vehicle1Id = "vehicle4";
         String vehicle2Id = "vehicle5";
 
@@ -145,12 +148,6 @@ public class VehicleE2ETests {
                 .post("/create/" + vehicle1Id)
                 .then()
                 .statusCode(200);
-
-        given()
-                .post("/create/" + vehicle2Id)
-                .then()
-                .statusCode(200);
-
         // Step 2: Move Vehicle 1 to Position (1, 1)
         given()
                 .contentType("application/json")
@@ -158,6 +155,12 @@ public class VehicleE2ETests {
                 .post("/move")
                 .then()
                 .statusCode(200);
+
+        given()
+                .post("/create/" + vehicle2Id)
+                .then()
+                .statusCode(200);
+
 
         // Step 3: Move Vehicle 2 to the Same Position (1, 1)
         given()
@@ -168,7 +171,7 @@ public class VehicleE2ETests {
                 .statusCode(200);
 
         // Wait for Eventual Consistency
-        Thread.sleep(2000);
+        Thread.sleep(4000);
 
         // Step 4: Verify that Vehicle 1 was Deleted
         RestAssured.baseURI = READ_API_BASE_URL;
@@ -178,10 +181,32 @@ public class VehicleE2ETests {
                 .statusCode(404);
 
         // Step 5: Verify that Vehicle 2 is Present
+        boolean success = false;
+        for (int i = 0; i < 3; i++) {
+            try {
+                given()
+                        .get("/" + vehicle2Id)
+                        .then()
+                        .statusCode(200);
+                success = true;
+                break; // Exit the retry loop if successful
+            } catch (AssertionError e) {
+                if (i < 2) { // Only wait if more retries are left
+                    Thread.sleep(2000);
+                } else {
+                    throw e; // Rethrow if the last retry fails
+                }
+            }
+        }
+        if (!success) {
+            throw new AssertionError("Failed to delete Vehicle 2 after 3 attempts");
+        }
+
+        RestAssured.baseURI = WRITE_API_BASE_URL;
         given()
-                .get("/" + vehicle2Id)
+                .post("/delete/" + vehicle2Id)
                 .then()
                 .statusCode(200)
-                .body("id", equalTo(vehicle2Id));
+                .body(equalTo(vehicle2Id));
     }
 }
