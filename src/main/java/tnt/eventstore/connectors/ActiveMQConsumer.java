@@ -60,12 +60,4 @@ public class ActiveMQConsumer implements EventStoreConsumer {
         }
         return events;
     }
-
-    /*@Override
-    public List<StoreBaseEvent> fetchEventsByScope(EventScope scope) throws EventStoreException {
-        List<StoreBaseEvent> events = getAllEvents();
-        return events.stream()
-                .filter(event -> event.getClass().equals(scope.getEventType()) && event.getVehicleId().equals(scope.getId()))
-                .toList();
-    }*/
 }
