@@ -47,7 +47,7 @@ public class ActiveMQConsumer implements EventStoreConsumer {
             log.debug("Attempting to read events from broker {}", defaultBrokerUrl);
             Message message;
             do {
-                message = consumer.receive(5000); // 5 Sekunden Timeout
+                message = consumer.receive(10); // 5 Sekunden Timeout
                 if (message instanceof ObjectMessage objectMessage) {
                     events.add((StoreBaseEvent) objectMessage.getObject());
                     log.debug("Received event: {}", objectMessage);
