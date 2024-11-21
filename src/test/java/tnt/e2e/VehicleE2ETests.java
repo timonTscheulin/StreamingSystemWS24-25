@@ -32,7 +32,7 @@ public class VehicleE2ETests {
                 .body(equalTo(vehicleId));
 
         // Wait for Eventual Consistency
-        Thread.sleep(2000);
+        Thread.sleep(40);
 
         // Step 2: Move Vehicle
         given()
@@ -44,7 +44,7 @@ public class VehicleE2ETests {
                 .body(equalTo(vehicleId));
 
         // Wait for Eventual Consistency
-        Thread.sleep(2000);
+        Thread.sleep(40);
 
         // Step 3: Delete Vehicle
         given()
@@ -52,6 +52,8 @@ public class VehicleE2ETests {
                 .then()
                 .statusCode(200)
                 .body(equalTo(vehicleId));
+
+        Thread.sleep(40);
 
         // Validate deletion via Read API
         RestAssured.baseURI = READ_API_BASE_URL;
@@ -85,7 +87,7 @@ public class VehicleE2ETests {
         }
 
         // Wait for Eventual Consistency
-        Thread.sleep(2000);
+        Thread.sleep(40);
 
         // Step 3: Verify Deletion via Read API
         RestAssured.baseURI = READ_API_BASE_URL;
@@ -125,7 +127,7 @@ public class VehicleE2ETests {
                 .statusCode(200);
 
         // Wait for Eventual Consistency
-        Thread.sleep(2000);
+        Thread.sleep(40);
 
         // Step 4: Verify Deletion via Read API
         RestAssured.baseURI = READ_API_BASE_URL;
@@ -171,7 +173,7 @@ public class VehicleE2ETests {
                 .statusCode(200);
 
         // Wait for Eventual Consistency
-        Thread.sleep(4000);
+        Thread.sleep(40);
 
         // Step 4: Verify that Vehicle 1 was Deleted
         RestAssured.baseURI = READ_API_BASE_URL;
@@ -192,7 +194,7 @@ public class VehicleE2ETests {
                 break; // Exit the retry loop if successful
             } catch (AssertionError e) {
                 if (i < 2) { // Only wait if more retries are left
-                    Thread.sleep(2000);
+                    Thread.sleep(10);
                 } else {
                     throw e; // Rethrow if the last retry fails
                 }
