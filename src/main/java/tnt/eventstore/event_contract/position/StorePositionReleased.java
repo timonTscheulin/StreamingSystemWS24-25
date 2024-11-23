@@ -13,4 +13,9 @@ public class StorePositionReleased extends StoreBasePosition {
     public DomainBaseEvent toDomainEvent() {
         return new PositionReleased(new AbsolutPosition(getX_position(), getY_position()));
     }
+
+    @Override
+    public String getEventType() {
+        return "StorePositionReleased";
+    }
 }

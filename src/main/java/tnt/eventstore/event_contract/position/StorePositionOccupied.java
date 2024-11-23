@@ -18,4 +18,9 @@ public class StorePositionOccupied extends StoreBasePosition {
     public DomainBaseEvent toDomainEvent() {
         return new PositionOccupied(occupationId, new AbsolutPosition(getX_position(), getY_position()));
     }
+
+    @Override
+    public String getEventType() {
+        return "StorePositionOccupied";
+    }
 }

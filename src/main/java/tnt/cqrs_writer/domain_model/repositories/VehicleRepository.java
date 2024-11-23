@@ -7,7 +7,7 @@ import tnt.cqrs_writer.domain_model.events.vehicle.VehicleCreated;
 import tnt.cqrs_writer.domain_model.events.vehicle.VehicleNewPosition;
 import tnt.cqrs_writer.domain_model.events.vehicle.VehicleRemoved;
 import tnt.cqrs_writer.framework.events.DomainBaseEvent;
-import tnt.eventstore.InMemoryEventStore;
+import tnt.eventstore.connectors.InMemoryEventStore;
 
 import java.util.List;
 import java.util.Objects;

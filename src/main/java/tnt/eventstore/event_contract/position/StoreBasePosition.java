@@ -18,4 +18,10 @@ public abstract class StoreBasePosition extends StoreBaseEvent {
         positionId = x + "_" + y;
     }
 
+    public String getEventScope() { return positionId; }
+
+    public String getEventDomain() {
+        return "DomainPosition";
+    }
+
 }

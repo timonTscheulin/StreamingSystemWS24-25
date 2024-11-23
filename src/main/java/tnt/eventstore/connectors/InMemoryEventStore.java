@@ -1,6 +1,5 @@
-package tnt.eventstore;
+package tnt.eventstore.connectors;
 
-import tnt.cqrs_writer.domain_model.aggregates.Position;
 import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 import tnt.eventstore.event_contract.StoreBaseEvent;
 

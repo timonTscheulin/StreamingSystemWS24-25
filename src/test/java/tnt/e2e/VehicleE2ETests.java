@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.*;
 public class VehicleE2ETests {
 
     private static final String WRITE_API_BASE_URL = "http://localhost:8082/cqrs_api/vehicles";
-    private static final String READ_API_BASE_URL = "http://localhost:8080/cqrs_api/vehicles";
+    private static final String READ_API_BASE_URL = "http://localhost:8083/cqrs_api/vehicles";
 
     @BeforeAll
     public static void setup() {

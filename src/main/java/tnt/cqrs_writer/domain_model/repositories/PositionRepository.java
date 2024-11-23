@@ -5,7 +5,7 @@ import tnt.cqrs_writer.domain_model.events.position.PositionOccupied;
 import tnt.cqrs_writer.domain_model.events.position.PositionReleased;
 import tnt.cqrs_writer.domain_model.value_objects.AbsolutPosition;
 import tnt.cqrs_writer.framework.events.DomainBaseEvent;
-import tnt.eventstore.InMemoryEventStore;
+import tnt.eventstore.connectors.InMemoryEventStore;
 
 import java.util.List;
 

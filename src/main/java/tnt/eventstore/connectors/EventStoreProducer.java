@@ -3,6 +3,8 @@ package tnt.eventstore.connectors;
 import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 
 import jakarta.jms.JMSException;
+import tnt.eventstore.event_contract.StoreBaseEvent;
+
 import java.util.List;
 
 public interface EventStoreProducer {
@@ -11,6 +13,5 @@ public interface EventStoreProducer {
      * @param events Die zu speichernden Events
      * @throws EventStoreException falls ein Speicherfehler auftritt
      */
-    void storeEvent(List<DomainBaseEvent> events) throws EventStoreException, JMSException;
-
+    void storeEvents(List<StoreBaseEvent> events) throws EventStoreException, JMSException;
 }

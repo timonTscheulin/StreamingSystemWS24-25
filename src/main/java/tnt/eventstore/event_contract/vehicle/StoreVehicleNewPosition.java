@@ -24,4 +24,9 @@ public class StoreVehicleNewPosition extends StoreVehicleBase {
     public DomainBaseEvent toDomainEvent() {
         return new VehicleNewPosition(getVehicleId(), getX(), getY());
     }
+
+    @Override
+    public String getEventType() {
+        return "StoreVehicleNewPosition";
+    }
 }

@@ -12,4 +12,9 @@ public class StoreVehicleHasVisitedPositionAgain extends StoreVehicleBase {
     public DomainBaseEvent toDomainEvent() {
         return new VehicleHasVisitedPositionAgain(getVehicleId());
     }
+
+    @Override
+    public String getEventType() {
+        return "StoreVehicleHasVisitedPositionAgain";
+    }
 }

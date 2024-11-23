@@ -12,4 +12,9 @@ public class StoreVehicleHasReachedMovementLimit extends StoreVehicleBase {
     public DomainBaseEvent toDomainEvent() {
         return new VehicleHasReachedMovementLimit(getVehicleId());
     }
+
+    @Override
+    public String getEventType() {
+        return "StoreVehicleHasReachedMovementLimit";
+    }
 }

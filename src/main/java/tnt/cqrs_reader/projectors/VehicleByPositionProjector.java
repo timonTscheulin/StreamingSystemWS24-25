@@ -3,7 +3,7 @@ package tnt.cqrs_reader.projectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tnt.cqrs_reader.query_repositories.VehiclePositionRepository;
-import tnt.eventstore.connectors.ActiveMQConsumer;
+import tnt.eventstore.connectors.ActiveMQConsumerConnector;
 import tnt.eventstore.connectors.EventStoreConsumer;
 import tnt.eventstore.event_contract.StoreBaseEvent;
 import tnt.eventstore.event_contract.vehicle.StoreVehicleCreated;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class VehicleByPositionProjector extends BaseProjector {
 
-    private EventStoreConsumer store = new ActiveMQConsumer();
+    private EventStoreConsumer store = new ActiveMQConsumerConnector();
     private static final Logger log = LoggerFactory.getLogger(VehicleByPositionProjector.class);
     private VehiclePositionRepository repository;
 
@@ -47,7 +47,7 @@ public class VehicleByPositionProjector extends BaseProjector {
     }
 
     private void process(StoreVehicleCreated cmd) {
-        repository.add(cmd.getVehicleId(), cmd.getX(), cmd.getY());
+        repository.add(cmd.getVehicleId(), cmd.getStartX(), cmd.getStartY());
     }
 
     private void process(StoreVehicleRemoved cmd) {

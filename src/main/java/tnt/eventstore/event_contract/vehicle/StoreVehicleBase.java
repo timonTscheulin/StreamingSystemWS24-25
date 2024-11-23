@@ -14,6 +14,12 @@ public abstract class StoreVehicleBase extends StoreBaseEvent {
         return vehicleId;
     }
 
+    public String getEventScope() {return vehicleId; }
+
+    public String getEventDomain() {
+        return "DomainVehicle";
+    }
+
     public String toString() {
         return "StoreVehicleBase [vehicleId=" + vehicleId + "]";
     }

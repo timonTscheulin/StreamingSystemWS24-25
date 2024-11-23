@@ -13,4 +13,9 @@ public class StoreVehicleRemoved extends StoreVehicleBase{
     public DomainBaseEvent toDomainEvent() {
         return new VehicleRemoved(getVehicleId());
     }
+
+    @Override
+    public String getEventType() {
+        return "StoreVehicleRemoved";
+    }
 }
