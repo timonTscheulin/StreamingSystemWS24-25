@@ -29,12 +29,6 @@ public class VehicleMoveHandler implements CommandHandler<MoveVehicle> {
 
         log.debug("Handling MoveVehicle command for vehicle ID: {}", command.name());
 
-        /* Vehicle vehicle = vehicleRepository.getVehicle(command.name());
-
-        if (!vehicle.exists()) {
-            log.error("Vehicle with ID: {} not exists. Cannot move vehicle", command.name());
-            throw new InstanceNotFoundException("Vehicle with ID " + command.name() + "not exists");
-        }*/
         VehicleManager manager = new VehicleManager(vehicleRepository, positionMapRepository);
 
         try {
