@@ -2,34 +2,40 @@ package tnt.cqrs_writer.domain_model.repositories;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 import tnt.cqrs_writer.domain_model.aggregates.Vehicle;
 import tnt.cqrs_writer.domain_model.events.vehicle.VehicleCreated;
 import tnt.cqrs_writer.domain_model.events.vehicle.VehicleNewPosition;
 import tnt.cqrs_writer.domain_model.events.vehicle.VehicleRemoved;
 import tnt.cqrs_writer.framework.events.DomainBaseEvent;
+import tnt.eventstore.EventStore;
 import tnt.eventstore.connectors.InMemoryEventStore;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
+@Repository
 public class VehicleRepository {
     private static final Logger log = LoggerFactory.getLogger(VehicleRepository.class);
-    private static VehicleRepository INSTANCE;
 
-    private VehicleRepository(){}
+    private EventStore eventStore;
 
-    public static VehicleRepository getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new VehicleRepository();
-        }
-        return INSTANCE;
+    public VehicleRepository(EventStore eventStore){
+        this.eventStore = eventStore;
     }
 
     public Vehicle getVehicle(String vehicleId) {
         Vehicle result = new Vehicle(vehicleId);;
+        List<DomainBaseEvent> events = new ArrayList<>();
 
-        List<DomainBaseEvent> events = InMemoryEventStore.getInstance().getEvents();
+        try {
+            events = eventStore.getAllEvents();
+        } catch (Exception e) {
+            log.error("Unable to load events.");
+            log.error(e.getMessage());
+        }
+
         for (DomainBaseEvent event : events) {
             if (event instanceof VehicleCreated createdEvent) {
                 if(Objects.equals(createdEvent.vehicleId(), vehicleId)) {

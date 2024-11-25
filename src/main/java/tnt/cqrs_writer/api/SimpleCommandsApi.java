@@ -6,9 +6,14 @@ import tnt.cqrs_writer.commands.RemoveVehicle;
 import tnt.cqrs_writer.dtypes.PositionDelta;
 import tnt.cqrs_writer.dtypes.PositionPoint;
 import tnt.cqrs_writer.framework.CommandDispatcher;
+import tnt.eventstore.EventStore;
 
 public class SimpleCommandsApi implements VehicleCommands {
-    CommandDispatcher commandDispatcher = new CommandDispatcher();
+    private final CommandDispatcher commandDispatcher;
+
+    public SimpleCommandsApi(EventStore eventStore) {
+        this.commandDispatcher = new CommandDispatcher(eventStore);
+    }
 
     @Override
     public void createVehicle(String name, PositionPoint startPosition) throws Exception {

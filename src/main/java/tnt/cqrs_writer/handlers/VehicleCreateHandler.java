@@ -16,26 +16,17 @@ import java.util.List;
 @CommandHandlerOf(CreateVehicle.class)
 public class VehicleCreateHandler implements CommandHandler<CreateVehicle> {
     private static final Logger log = LoggerFactory.getLogger(VehicleCreateHandler.class);
-    private final VehicleRepository vehicleRepository = VehicleRepository.getInstance();
-    private final PositionRepository positionMapRepository = PositionRepository.getInstance();
+    private final VehicleRepository vehicleRepository;
+    private final PositionRepository positionMapRepository;
+
+    public VehicleCreateHandler(VehicleRepository vehicleRepository, PositionRepository positionMapRepository) {
+        this.vehicleRepository = vehicleRepository;
+        this.positionMapRepository = positionMapRepository;
+    }
 
     @Override
     public List<DomainBaseEvent> handle(CreateVehicle command) throws InstanceAlreadyExistsException {
         log.debug("Handling CreateVehicle command for vehicle ID: {}", command.name());
-
-        /*Vehicle vehicle = vehicleRepository.getVehicle(command.name());
-
-        if (vehicle == null) {
-            log.error("Inconsistent repository state. Something realy bad was happened at command {}.", command.name());
-            throw new IllegalStateException("Command can not be executed caused by illegal repository state");
-        }
-
-        if (vehicle.exists()) {
-            log.error("Vehicle with ID: {} already exists. Cannot create new vehicle.", command.name());
-            throw new InstanceAlreadyExistsException("Vehicle with ID " + command.name() + " already exists.");
-        }
-
-        vehicle = new Vehicle(command.name());*/
 
         VehicleManager manager = new VehicleManager(vehicleRepository, positionMapRepository);
         try {

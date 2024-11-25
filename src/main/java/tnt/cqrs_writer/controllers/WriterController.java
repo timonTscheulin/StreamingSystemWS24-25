@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tnt.cqrs_writer.api.SimpleCommandsApi;
+import tnt.cqrs_writer.api.VehicleCommands;
 import tnt.cqrs_writer.dtypes.PositionDelta;
 import tnt.cqrs_writer.dtypes.PositionPoint;
 
@@ -14,10 +15,10 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("cqrs_api/vehicles")
 public class WriterController {
-    private final SimpleCommandsApi localApi;
+    private final VehicleCommands localApi;
 
-    public WriterController() {
-        this.localApi = new SimpleCommandsApi();
+    public WriterController(VehicleCommands localApi) {
+        this.localApi = localApi;
     }
 
     @PostMapping("/delete/{id}")

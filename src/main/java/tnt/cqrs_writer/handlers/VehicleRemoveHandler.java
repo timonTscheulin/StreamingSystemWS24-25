@@ -2,6 +2,7 @@ package tnt.cqrs_writer.handlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import tnt.cqrs_writer.commands.RemoveVehicle;
 import tnt.cqrs_writer.domain_model.aggregates.Vehicle;
 import tnt.cqrs_writer.domain_model.aggregates.VehicleManager;
@@ -13,11 +14,17 @@ import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 import javax.management.InstanceNotFoundException;
 import java.util.List;
 
+@Component
 @CommandHandlerOf(RemoveVehicle.class)
 public class VehicleRemoveHandler implements CommandHandler<RemoveVehicle> {
     private static final Logger log = LoggerFactory.getLogger(VehicleRemoveHandler.class);
-    private final VehicleRepository vehicleRepository = VehicleRepository.getInstance();
-    private final PositionRepository positionMapRepository = PositionRepository.getInstance();
+    private final VehicleRepository vehicleRepository;
+    private final PositionRepository positionMapRepository;
+
+    public VehicleRemoveHandler(VehicleRepository vehicleRepository, PositionRepository positionRepository) {
+        this.vehicleRepository = vehicleRepository;
+        this.positionMapRepository = positionRepository;
+    }
 
     @Override
     public List<DomainBaseEvent> handle(RemoveVehicle command) throws InstanceNotFoundException {

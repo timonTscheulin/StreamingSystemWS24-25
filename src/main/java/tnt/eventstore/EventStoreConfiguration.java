@@ -24,7 +24,7 @@ public class EventStoreConfiguration {
         this.properties = properties;
     }
 
-    @Bean
+
     public EventStore createEventStore() {
         String type = properties.getType();
 
@@ -47,4 +47,10 @@ public class EventStoreConfiguration {
             throw new RuntimeException("Invalid event store type: " + type);
         }
     }
+
+    @Bean
+    public EventStore eventStore() {
+        return createEventStore();
+    }
+
 }

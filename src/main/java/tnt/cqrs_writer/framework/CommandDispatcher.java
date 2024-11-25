@@ -4,6 +4,7 @@ import org.reflections.Reflections;
 import tnt.cqrs_writer.commands.Command;
 import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 import tnt.cqrs_writer.handlers.CommandHandler;
+import tnt.eventstore.EventStore;
 import tnt.eventstore.connectors.InMemoryEventStore;
 import tnt.eventstore.connectors.ActiveMQProducerConnector;
 
@@ -15,9 +16,11 @@ import java.util.Set;
 
 public class CommandDispatcher {
     private final Map<Class<? extends Command>, CommandHandler<? extends Command>> handlers = new HashMap<>();
-    private final ActiveMQProducerConnector eventStore = new ActiveMQProducerConnector();
+    //private final ActiveMQProducerConnector eventStore = new ActiveMQProducerConnector();
+    private final EventStore eventStore;
 
-    public CommandDispatcher() {
+    public CommandDispatcher(EventStore eventStore) {
+        this.eventStore = eventStore;
         registerAnnotatedHandlers("tnt.cqrs_writer.handlers");
     }
 
@@ -51,8 +54,9 @@ public class CommandDispatcher {
 
         // @todo implement transactions for write into event store
         List<DomainBaseEvent> events = handler.handle(command);
-        //eventStore.storeEvents(events);
-        InMemoryEventStore.getInstance().store(events);
+        eventStore.store(events);
+        //InMemoryEventStore.getInstance().store(events);
+
         // end of transaction
     }
 }

@@ -11,6 +11,7 @@ import tnt.eventstore.event_contract.StoreBaseEvent;
 import jakarta.jms.JMSException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class EventStore {
@@ -37,10 +38,12 @@ public class EventStore {
         log.info("Store events successful");
     }
 
-    public List<StoreBaseEvent> getAllEvents() throws EventStoreException, JMSException {
-        List<StoreBaseEvent> events = new ArrayList<>();
+    public List<DomainBaseEvent> getAllEvents() throws EventStoreException {
         log.info("Getting all events");
-        return consumer.getAllEvents();
+        return consumer.getAllEvents()
+                .stream()
+                .map(StoreBaseEvent::toDomainEvent)
+                .collect(Collectors.toList());
     }
 
     public List<StoreBaseEvent> getLatestEvents() throws EventStoreException, JMSException {

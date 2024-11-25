@@ -9,8 +9,7 @@ import tnt.eventstore.event_contract.types.AbsolutPoint;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StoreVehicleCreated extends StoreVehicleBase {
-    private final int startX;
-    private final int startY;
+    private final AbsolutPoint starttPoint;
 
     @JsonCreator
     public StoreVehicleCreated(
@@ -18,17 +17,16 @@ public class StoreVehicleCreated extends StoreVehicleBase {
             @JsonProperty("startX") int startX,
             @JsonProperty("startY") int startY) {
         super(vehicleId);
-        this.startX = startX;
-        this.startY = startY;
+        starttPoint = new AbsolutPoint(startX, startY);
     }
 
 
     public int getStartX() {
-        return startX;
+        return starttPoint.x();
     }
 
     public int getStartY() {
-        return startY;
+        return starttPoint.y();
     }
 
     @Override
