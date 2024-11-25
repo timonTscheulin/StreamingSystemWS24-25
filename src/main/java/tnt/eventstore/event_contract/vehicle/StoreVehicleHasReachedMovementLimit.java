@@ -7,7 +7,7 @@ import tnt.cqrs_writer.domain_model.events.vehicle.VehicleHasReachedMovementLimi
 import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StoreVehicleHasReachedMovementLimit extends StoreVehicleBase {
+public class StoreVehicleHasReachedMovementLimit extends StoreBaseVehicle {
     @JsonCreator
     public StoreVehicleHasReachedMovementLimit(
             @JsonProperty("vehicleId") String vehicleId) {

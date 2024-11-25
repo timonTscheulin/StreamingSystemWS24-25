@@ -20,16 +20,13 @@ public class QueryInstance implements VehicleQueries {
     private VehicleRepository vehicleRepository;
     private VehiclePositionRepository vehicleByPositionRepository;
 
-    public QueryInstance() {
-        initializeProjectors();
-    }
-
-    private void initializeProjectors() {
-        this.vehicleRepository = new VehicleRepository();
-        VehicleProjector vehicleProjector = new VehicleProjector(vehicleRepository);
-
-        this.vehicleByPositionRepository = new VehiclePositionRepository();
-        VehicleByPositionProjector vehicleByPositionProjector = new VehicleByPositionProjector(vehicleByPositionRepository);
+    public QueryInstance(
+            VehicleRepository vehicleRepository,
+            VehiclePositionRepository vehicleByPositionRepository,
+            VehicleProjector vehicleProjector,
+            VehicleByPositionProjector vehicleByPositionProjector) {
+        this.vehicleRepository = vehicleRepository;
+        this.vehicleByPositionRepository = vehicleByPositionRepository;
 
         projectors.add(vehicleProjector);
         projectors.add(vehicleByPositionProjector);

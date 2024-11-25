@@ -8,7 +8,7 @@ import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 import tnt.eventstore.event_contract.types.AbsolutPoint;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StoreVehicleNewPosition extends StoreVehicleBase {
+public class StoreVehicleNewPosition extends StoreBaseVehicle {
     private final AbsolutPoint newPosition;
 
     @JsonCreator

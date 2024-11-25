@@ -13,7 +13,7 @@ public class Position {
     /* This aggregate is a helper aggregate which stores meta information about the position of each vehicle on a map
      * and allow check if two vehicles collide by a move command or not.
      */
-    private AbsolutPosition coordinates;
+    private final AbsolutPosition coordinates;
     @Getter
     private boolean isOccupied = false;
     @Getter

@@ -3,12 +3,12 @@ package tnt.cqrs_writer.handlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tnt.cqrs_writer.commands.CreateVehicle;
-import tnt.cqrs_writer.domain_model.aggregates.Vehicle;
 import tnt.cqrs_writer.domain_model.aggregates.VehicleManager;
 import tnt.cqrs_writer.domain_model.repositories.PositionRepository;
 import tnt.cqrs_writer.domain_model.repositories.VehicleRepository;
 import tnt.cqrs_writer.framework.CommandHandlerOf;
 import tnt.cqrs_writer.framework.events.DomainBaseEvent;
+import tnt.eventstore.EventStore;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.util.List;
@@ -19,9 +19,9 @@ public class VehicleCreateHandler implements CommandHandler<CreateVehicle> {
     private final VehicleRepository vehicleRepository;
     private final PositionRepository positionMapRepository;
 
-    public VehicleCreateHandler(VehicleRepository vehicleRepository, PositionRepository positionMapRepository) {
-        this.vehicleRepository = vehicleRepository;
-        this.positionMapRepository = positionMapRepository;
+    public VehicleCreateHandler(EventStore eventStore) {
+        this.vehicleRepository = new VehicleRepository(eventStore);
+        this.positionMapRepository = new PositionRepository(eventStore);
     }
 
     @Override
@@ -30,7 +30,6 @@ public class VehicleCreateHandler implements CommandHandler<CreateVehicle> {
 
         VehicleManager manager = new VehicleManager(vehicleRepository, positionMapRepository);
         try {
-            //List<DomainBaseEvent> events = vehicle.apply(command);
             List<DomainBaseEvent> events = manager.apply(command);
             log.info("Vehicle with ID: {} successfully created and updated in repository.", command.name());
 

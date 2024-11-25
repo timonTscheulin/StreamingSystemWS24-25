@@ -7,7 +7,7 @@ import tnt.cqrs_writer.domain_model.events.vehicle.VehicleHasVisitedPositionAgai
 import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StoreVehicleHasVisitedPositionAgain extends StoreVehicleBase {
+public class StoreVehicleHasVisitedPositionAgain extends StoreBaseVehicle {
     @JsonCreator
     public StoreVehicleHasVisitedPositionAgain(
             @JsonProperty("vehicleId") String vehicleId) {

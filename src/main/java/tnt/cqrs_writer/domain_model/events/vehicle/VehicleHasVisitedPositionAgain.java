@@ -5,7 +5,7 @@ import tnt.eventstore.event_contract.StoreBaseEvent;
 import tnt.eventstore.event_contract.vehicle.StoreVehicleHasVisitedPositionAgain;
 
 public class VehicleHasVisitedPositionAgain implements DomainBaseEvent {
-    private String vehicleId;
+    private final String vehicleId;
 
     public VehicleHasVisitedPositionAgain(String vehicleId) {
         this.vehicleId = vehicleId;

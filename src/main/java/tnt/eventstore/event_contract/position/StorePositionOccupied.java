@@ -8,9 +8,9 @@ import tnt.cqrs_writer.domain_model.events.position.PositionOccupied;
 import tnt.cqrs_writer.domain_model.value_objects.AbsolutPosition;
 import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 
+@Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StorePositionOccupied extends StoreBasePosition {
-    @Getter
     private final String occupationId;
 
     @JsonCreator

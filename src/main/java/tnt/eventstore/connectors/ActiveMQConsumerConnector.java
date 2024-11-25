@@ -2,6 +2,8 @@ package tnt.eventstore.connectors;
 
 
 import jakarta.jms.*;
+import jdk.jshell.spi.ExecutionControl;
+import kotlin.NotImplementedError;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +42,12 @@ public class ActiveMQConsumerConnector implements EventStoreConsumer {
     }
 
     @Override
-    public List<StoreBaseEvent> getAllEvents() throws EventStoreException {
+    public List<StoreBaseEvent> getEventsFromOffset(String eventDomain, Long domainOffset) throws EventStoreException {
+        throw new NotImplementedError();
+    }
+
+    @Override
+    public List<StoreBaseEvent> getAllEvents(String domain) throws EventStoreException {
         List<StoreBaseEvent> events = new ArrayList<>();
         try {
             log.debug("Attempting to read events from broker {}", defaultBrokerUrl);

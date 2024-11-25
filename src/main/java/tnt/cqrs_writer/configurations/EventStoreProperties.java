@@ -1,4 +1,4 @@
-package tnt.eventstore;
+package tnt.cqrs_writer.configurations;
 
 import lombok.Getter;
 import lombok.Setter;

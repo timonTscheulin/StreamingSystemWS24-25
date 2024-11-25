@@ -15,8 +15,8 @@ import java.util.List;
 public class QueryController {
     private final QueryInstance queryInstance;
 
-    public QueryController() {
-        this.queryInstance = new QueryInstance();
+    public QueryController(QueryInstance queryInstance) {
+        this.queryInstance = queryInstance;
     }
 
     @PostConstruct

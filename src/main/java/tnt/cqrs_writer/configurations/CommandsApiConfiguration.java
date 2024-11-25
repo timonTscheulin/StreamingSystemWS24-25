@@ -1,7 +1,9 @@
-package tnt.cqrs_writer.api;
+package tnt.cqrs_writer.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tnt.cqrs_writer.api.SimpleCommandsApi;
+import tnt.cqrs_writer.api.VehicleCommands;
 import tnt.eventstore.EventStore;
 
 @Configuration

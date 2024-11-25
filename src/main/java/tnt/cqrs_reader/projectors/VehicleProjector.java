@@ -3,28 +3,28 @@ package tnt.cqrs_reader.projectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tnt.cqrs_reader.query_repositories.VehicleRepository;
+import tnt.eventstore.EventStore;
 import tnt.eventstore.connectors.ActiveMQConsumerConnector;
 import tnt.eventstore.connectors.EventStoreConsumer;
 import tnt.eventstore.event_contract.StoreBaseEvent;
-import tnt.eventstore.event_contract.vehicle.StoreVehicleCreated;
-import tnt.eventstore.event_contract.vehicle.StoreVehicleNewPosition;
-import tnt.eventstore.event_contract.vehicle.StoreVehicleRemoved;
+import tnt.eventstore.event_contract.vehicle.*;
 
 import java.util.List;
 
 public class VehicleProjector extends BaseProjector {
     private static final Logger log = LoggerFactory.getLogger(VehicleProjector.class);
-    private EventStoreConsumer store = new ActiveMQConsumerConnector();
+    private EventStore store;
     private VehicleRepository repository;
 
-    public VehicleProjector(VehicleRepository repository) {
+    public VehicleProjector(VehicleRepository repository, EventStore store) {
+        this.store = store;
         this.repository = repository;
     }
 
     @Override
     public void project() {
         try {
-            List<StoreBaseEvent> events = store.getAllEvents();
+            List<StoreBaseEvent> events = store.getLatestEvents(new StoreHelperVehicle().getEventDomain());
             for (StoreBaseEvent e : events) {
                 if (e instanceof StoreVehicleCreated createdEvent) {
                     log.info("StoreVehicleCreated: {}", createdEvent);

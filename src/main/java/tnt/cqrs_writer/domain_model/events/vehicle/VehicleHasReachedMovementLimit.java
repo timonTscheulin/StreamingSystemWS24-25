@@ -5,7 +5,7 @@ import tnt.eventstore.event_contract.StoreBaseEvent;
 import tnt.eventstore.event_contract.vehicle.StoreVehicleHasReachedMovementLimit;
 
 public class VehicleHasReachedMovementLimit implements DomainBaseEvent {
-    private String vehicleId;
+    private final String vehicleId;
 
     public VehicleHasReachedMovementLimit(String vehicleId) {
         this.vehicleId = vehicleId;

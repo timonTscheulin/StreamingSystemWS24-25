@@ -2,10 +2,10 @@ package tnt.eventstore.event_contract.vehicle;
 
 import tnt.eventstore.event_contract.StoreBaseEvent;
 
-public abstract class StoreVehicleBase extends StoreBaseEvent {
+public abstract class StoreBaseVehicle extends StoreBaseEvent {
     private final String vehicleId;
 
-    public StoreVehicleBase(String vehicleId) {
+    public StoreBaseVehicle(String vehicleId) {
         super();
         this.vehicleId = vehicleId;
     }
@@ -17,7 +17,7 @@ public abstract class StoreVehicleBase extends StoreBaseEvent {
     public String getEventScope() {return vehicleId; }
 
     public String getEventDomain() {
-        return "DomainVehicle";
+        return "Vehicle";
     }
 
     public String toString() {

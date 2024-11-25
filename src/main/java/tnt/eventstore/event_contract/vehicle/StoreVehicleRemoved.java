@@ -7,7 +7,7 @@ import tnt.cqrs_writer.domain_model.events.vehicle.VehicleRemoved;
 import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StoreVehicleRemoved extends StoreVehicleBase{
+public class StoreVehicleRemoved extends StoreBaseVehicle {
 
     @JsonCreator
     public StoreVehicleRemoved(

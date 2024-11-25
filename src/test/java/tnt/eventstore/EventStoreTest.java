@@ -4,10 +4,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import tnt.cqrs_writer.configurations.EventStoreConfiguration;
+import tnt.cqrs_writer.configurations.EventStoreProperties;
+import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 import tnt.eventstore.connectors.EventStoreException;
 import tnt.eventstore.event_contract.StoreBaseEvent;
+import tnt.eventstore.event_contract.vehicle.StoreHelperVehicle;
 import tnt.eventstore.event_contract.vehicle.StoreVehicleCreated;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -42,10 +47,12 @@ public class EventStoreTest {
             e.printStackTrace();
         }
 
-        List<StoreBaseEvent> events = null;
+        List<StoreBaseEvent> events = new ArrayList<>();
         try {
             // Step 3: Lese Events aus dem EventStore
-            events = eventStore.getAllEvents();
+
+            events.addAll(eventStore.getAllEvents(new StoreHelperVehicle().getEventDomain()).stream().map(DomainBaseEvent::toStoreEvent).toList());
+            events.addAll(eventStore.getAllEvents(new StoreHelperVehicle().getEventDomain()).stream().map(DomainBaseEvent::toStoreEvent).toList());
         } catch (Exception e) {
             e.printStackTrace();
         }

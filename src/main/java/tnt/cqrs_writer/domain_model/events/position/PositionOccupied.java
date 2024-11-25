@@ -6,10 +6,9 @@ import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 import tnt.eventstore.event_contract.StoreBaseEvent;
 import tnt.eventstore.event_contract.position.StorePositionOccupied;
 
+@Getter
 public class PositionOccupied implements DomainBaseEvent {
-    @Getter
     private final AbsolutPosition position;
-    @Getter
     private final String occupationId;
 
     public PositionOccupied(String occupiedBy, AbsolutPosition position) {

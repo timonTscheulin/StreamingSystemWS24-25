@@ -17,10 +17,10 @@ import java.util.Properties;
 
 public class KafkaProducerConnector implements EventStoreProducer {
     private static final Logger log = LoggerFactory.getLogger(KafkaProducerConnector.class);
-    private Properties producerProperties = new Properties();
     private KafkaProducer<String, byte[]> producer = null;
 
     public KafkaProducerConnector(String bootstrapServers) {
+        Properties producerProperties = new Properties();
         producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getName());
@@ -35,8 +35,9 @@ public class KafkaProducerConnector implements EventStoreProducer {
 
         for (StoreBaseEvent event : events) {
             String eventType = event.getEventType();
-            String eventScope = event.getId();
-            String eventDomain = "Test";//event.getEventDomain();
+            // is the kafka key. In this case only usefully if you have multiple partitions
+            String eventScope = event.getEventScope();
+            String eventDomain = event.getEventDomain();
             byte[] payload = null;
 
             try {

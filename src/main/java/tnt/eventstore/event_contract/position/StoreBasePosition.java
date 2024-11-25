@@ -3,12 +3,10 @@ package tnt.eventstore.event_contract.position;
 import lombok.Getter;
 import tnt.eventstore.event_contract.StoreBaseEvent;
 
+@Getter
 public abstract class StoreBasePosition extends StoreBaseEvent {
-    @Getter
     private int x_position;
-    @Getter
     private int y_position;
-    @Getter
     private String positionId;
 
     public StoreBasePosition(int x, int y) {
@@ -21,7 +19,7 @@ public abstract class StoreBasePosition extends StoreBaseEvent {
     public String getEventScope() { return positionId; }
 
     public String getEventDomain() {
-        return "DomainPosition";
+        return "Position";
     }
 
 }

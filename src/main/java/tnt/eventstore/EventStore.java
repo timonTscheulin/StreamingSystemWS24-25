@@ -10,7 +10,9 @@ import tnt.eventstore.event_contract.StoreBaseEvent;
 
 import jakarta.jms.JMSException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -18,6 +20,7 @@ public class EventStore {
     private final Logger log = LoggerFactory.getLogger(EventStore.class);
     private List<EventStoreProducer> producers;
     private EventStoreConsumer consumer;
+    private final Map<String, Long> domainOffsets = new HashMap<>();
 
     public EventStore(List<EventStoreProducer> producers, EventStoreConsumer consumer) {
         this.producers = producers;
@@ -38,15 +41,22 @@ public class EventStore {
         log.info("Store events successful");
     }
 
-    public List<DomainBaseEvent> getAllEvents() throws EventStoreException {
+    public List<DomainBaseEvent> getAllEvents(String eventDomain) throws EventStoreException {
         log.info("Getting all events");
-        return consumer.getAllEvents()
-                .stream()
-                .map(StoreBaseEvent::toDomainEvent)
-                .collect(Collectors.toList());
+        return convertToDomainEvents(consumer.getAllEvents(eventDomain));
     }
 
-    public List<StoreBaseEvent> getLatestEvents() throws EventStoreException, JMSException {
-        return null;
+    public List<StoreBaseEvent> getLatestEvents(String eventDomain) throws EventStoreException {
+        long domainOffset = domainOffsets.getOrDefault(eventDomain, 0L);
+        List<StoreBaseEvent> events = consumer.getEventsFromOffset(eventDomain, domainOffset);
+        log.info("Getting latest events: event count:  {}", events.size());
+        domainOffsets.put(eventDomain, domainOffset + events.size());
+        return events;
+    }
+
+    private List<DomainBaseEvent>convertToDomainEvents(List<StoreBaseEvent> storeBaseEvents) {
+        return storeBaseEvents.stream()
+                .map(StoreBaseEvent::toDomainEvent)
+                .collect(Collectors.toList());
     }
 }

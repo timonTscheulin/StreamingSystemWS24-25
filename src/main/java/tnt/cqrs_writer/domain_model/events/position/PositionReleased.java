@@ -6,8 +6,8 @@ import tnt.cqrs_writer.framework.events.DomainBaseEvent;
 import tnt.eventstore.event_contract.StoreBaseEvent;
 import tnt.eventstore.event_contract.position.StorePositionReleased;
 
+@Getter
 public class PositionReleased implements DomainBaseEvent {
-    @Getter
     private AbsolutPosition position;
 
     public PositionReleased(AbsolutPosition position) {

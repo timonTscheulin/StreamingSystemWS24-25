@@ -9,6 +9,14 @@ spring:
       on-profile: reader
 server.port: 8083
 
+event-store:
+  type: kafka
+  kafka:
+    bootstrap-servers: localhost:29092
+
+  activemq:
+    topic: cqrs_topic
+
 ---
 spring:
   config:
