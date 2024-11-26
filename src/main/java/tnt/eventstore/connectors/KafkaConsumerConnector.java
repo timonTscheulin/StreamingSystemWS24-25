@@ -25,7 +25,8 @@ public class KafkaConsumerConnector implements EventStoreConsumer {
             "StoreVehicleNewPosition", tnt.eventstore.event_contract.vehicle.StoreVehicleNewPosition.class,
             "StoreVehicleHasVisitedPositionAgain", tnt.eventstore.event_contract.vehicle.StoreVehicleHasVisitedPositionAgain.class,
             "StorePositionOccupied", tnt.eventstore.event_contract.position.StorePositionOccupied.class,
-            "StorePositionReleased", tnt.eventstore.event_contract.position.StorePositionReleased.class
+            "StorePositionReleased", tnt.eventstore.event_contract.position.StorePositionReleased.class,
+            "StoreVehicleHasReachedMovementLimit", tnt.eventstore.event_contract.vehicle.StoreVehicleHasReachedMovementLimit.class
     );
 
     public KafkaConsumerConnector(String bootstrapServers) {
@@ -53,7 +54,7 @@ public class KafkaConsumerConnector implements EventStoreConsumer {
             // Poll and process records
             ConsumerRecords<String, String> records = null;
             do {
-                records = consumer.poll(Duration.ofMillis(1000));
+                records = consumer.poll(Duration.ofMillis(800));
 
                 if (records.isEmpty()) {
                     log.info("Finished reading all events from topic '{}'", eventDomain);
