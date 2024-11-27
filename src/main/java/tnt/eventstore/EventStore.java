@@ -43,7 +43,9 @@ public class EventStore {
 
     public List<DomainBaseEvent> getAllEvents(String eventDomain) throws EventStoreException {
         log.info("Getting all events");
-        return convertToDomainEvents(consumer.getAllEvents(eventDomain));
+        List<DomainBaseEvent> events = convertToDomainEvents(consumer.getAllEvents(eventDomain));
+        log.info("read of events done");
+        return events;
     }
 
     public List<StoreBaseEvent> getLatestEvents(String eventDomain) throws EventStoreException {

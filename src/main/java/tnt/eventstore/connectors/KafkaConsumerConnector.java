@@ -35,7 +35,9 @@ public class KafkaConsumerConnector implements EventStoreConsumer {
         consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        consumerProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"); // Default fallback
+        //consumerProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"); // Default fallback
+        consumerProperties.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, 20);
+        //consumerProperties.put(ConsumerConfig., 500);
         this.consumer = new KafkaConsumer<>(consumerProperties);
     }
 
@@ -54,7 +56,7 @@ public class KafkaConsumerConnector implements EventStoreConsumer {
             // Poll and process records
             ConsumerRecords<String, String> records = null;
             do {
-                records = consumer.poll(Duration.ofMillis(800));
+                records = consumer.poll(Duration.ofMillis(100));
 
                 if (records.isEmpty()) {
                     log.info("Finished reading all events from topic '{}'", eventDomain);
