@@ -1,15 +1,18 @@
 package tnt.beam;
 
+import org.apache.beam.model.pipeline.v1.RunnerApi;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.coders.StringUtf8Coder;
+import org.apache.beam.sdk.io.kafka.KafkaIO;
+import org.apache.beam.sdk.io.kafka.KafkaRecord;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.*;
-import org.apache.beam.sdk.values.PCollection;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.apache.beam.sdk.values.PCollection;
+import org.apache.kafka.common.serialization.LongDeserializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+
 
 public class TestMain {
 
@@ -18,9 +21,18 @@ public class TestMain {
         PipelineOptions options = PipelineOptionsFactory.create();
         Pipeline pipeline = Pipeline.create(options);
 
-        final List<String> cities = Arrays.asList("Furtwangen", "Hamburg", "VS-SAchwennignen");
 
-        PCollection<String> pc = pipeline.apply(Create.of(cities)).setCoder(StringUtf8Coder.of());
+        PCollection<KafkaRecord<Long, String>> kafkaRecords = pipeline
+                .apply(KafkaIO.<Long, String>read()
+                        .withBootstrapServers("localhost:29092")
+                        .withTopic("SensorData")
+                        .withKeyDeserializer(LongDeserializer.class)
+                        .withValueDeserializer(StringDeserializer.class));
+
+
+
+        //final List<String> cities = Arrays.asList("Furtwangen", "Hamburg", "VS-Schwennignen");
+        /*PCollection<String> pc = pipeline.apply(Create.of(cities)).setCoder(StringUtf8Coder.of());
         PCollection<String> filtered = pc.apply(Filter.by(new SerializableFunction<String, Boolean>() {
             @Override
             public Boolean apply(String input) {
@@ -28,7 +40,8 @@ public class TestMain {
             }
         }));
         filtered.apply(ParDo.of(new PrintElement()));
-
+        */
+        kafkaRecords.apply(ParDo.of(new PrintElement()));
         pipeline.run().waitUntilFinish();
 
     }

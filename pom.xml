@@ -18,6 +18,7 @@
     <licenses>
         <license/>
     </licenses>
+
     <developers>
         <developer/>
     </developers>
@@ -144,6 +145,10 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.15.2</version> <!-- oder deine verwendete Jackson-Version -->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.beam</groupId>
+            <artifactId>beam-sdks-java-io-kafka</artifactId>
         </dependency>
 
     </dependencies>

@@ -9,9 +9,9 @@ public class Main {
     public static void main(String[] args) {
         KafkaProducerConnector producer = new KafkaProducerConnector("localhost:29092");
         SimpleDataGenerator generator = new SimpleDataGenerator(
-                1000,
+                100,
                 3,
-                30,
+                3,
                 900,
                 1100,
                 70,
