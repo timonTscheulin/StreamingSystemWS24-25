@@ -1,14 +1,14 @@
 package tnt.beam;
 
-import org.apache.beam.sdk.io.kafka.KafkaRecord;
 import org.apache.beam.sdk.transforms.DoFn;
-import org.apache.beam.sdk.transforms.ParDo;
+import tnt.beam.data_model.SensorMeasurement;
 
-public class PrintElement extends DoFn<KafkaRecord<Long, String>, String>
+public class PrintElement extends DoFn<SensorMeasurement, String>
 {
     @ProcessElement
-    public void processElement(@Element KafkaRecord<Long, String> input, OutputReceiver<String> output) {
-        System.out.println(input.getKV().getValue());
+    public void processElement(@Element SensorMeasurement input, OutputReceiver<String> output) {
+
+        System.out.println(input);
         output.output("lol");
     }
 }
