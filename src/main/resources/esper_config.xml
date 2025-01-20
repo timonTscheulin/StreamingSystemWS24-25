@@ -1,0 +1,5 @@
+<esper-configuration xmlns="http://www.espertech.com/schema/esper">
+    <compiler>
+        <plugin-singlerow-function name="flatten" function-class="tnt.esper.udf.FlattenSensorEvent" function-method="flatten" />
+    </compiler>
+</esper-configuration>
