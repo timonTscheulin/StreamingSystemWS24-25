@@ -28,8 +28,6 @@ public class EsperKafkaProcessor {
         // ... und die geflattete Struktur (FlattenedSensorData)
         esperConfig.getCommon().addEventType(FlattenedSensorData.class);
 
-
-
         // 2) Runtime anlegen
         EPRuntime runtime = EPRuntimeProvider.getDefaultRuntime(esperConfig);
         runtime.initialize();
