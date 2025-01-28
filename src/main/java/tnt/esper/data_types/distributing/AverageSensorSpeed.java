@@ -9,7 +9,7 @@ public class AverageSensorSpeed {
     private int sensorId;
     private long beginTimestamp;
     private long windowSize;
-    private double averageSpeed;
+    private Double averageSpeed;
 
     @Override
     public String toString() {

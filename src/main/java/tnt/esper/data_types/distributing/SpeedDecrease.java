@@ -2,9 +2,13 @@ package tnt.esper.data_types.distributing;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
+@Setter
 public class SpeedDecrease {
     private int sensorId;
     private double averageSpeedOne;

@@ -14,6 +14,7 @@ import tnt.esper.data_types.distributing.SpeedDecrease;
 import tnt.esper.data_types.processing.PreprocessedSensorData;
 import tnt.esper.listeners.AvgSpeedListener;
 import tnt.esper.listeners.FlatteningListener;
+import tnt.esper.listeners.SpeedDecreaseListener;
 import tnt.generators.Events.SensorDataRecord;
 import tnt.generators.SimpleDataGenerator;
 
@@ -42,27 +43,23 @@ public class EsperKafkaProcessor {
         runtime.initialize();
 
         String epl = """
-           
-           
            @name('FlattenSensorData') select * from SensorDataRecord;
 
            @name('PreprocessSensorData') insert into PreprocessedSensorData select timestamp, sensorId, measurement as speed, 'm/s' as unit from FlattenedSensorData where measurement > 0;
+
            create context WindowBySensorId partition by sensorId from PreprocessedSensorData;
-           @name('CalculateAverageSpeed') context WindowBySensorId insert into AverageSensorSpeed select sensorId, current_timestamp as beginTimestamp, 10, avg(speed) from PreprocessedSensorData#time_batch(10 sec) group by sensorId;
-           
-           @name('SpeedDecrease')
-                   insert into SpeedDecrease
-                   select one.sensorId as sensorId,
-                          one.averageSpeed as averageSpeedOne,
-                          two.averageSpeed as averageSpeedTwo,
-                          three.averageSpeed as averageSpeedThree
-                   from pattern [
-                       every(one = AverageSensorSpeed ->\s
-                             two = AverageSensorSpeed(sensorId = one.sensorId) ->\s
-                             three = AverageSensorSpeed(sensorId = one.sensorId))
-                   ]
-                   where two.averageSpeed / one.averageSpeed < 0.75
-                     and three.averageSpeed / two.averageSpeed < 0.75;
+           @name('CalculateAverageSpeed') context WindowBySensorId insert into AverageSensorSpeed select sensorId, current_timestamp as beginTimestamp, 10, avg(speed) from PreprocessedSensorData#time_batch(10 sec) group by sensorId having avg(speed) is not null;
+
+           create context AvgWindowBySensorId partition by sensorId from AverageSensorSpeed;
+           @name('speedAlarm')
+                   context AvgWindowBySensorId
+                   select first_avg.sensorId as sensorId,
+                          first_avg.averageSpeed as averageSpeedOne,
+                          second_avg.averageSpeed as averageSpeedTwo,
+                          third_avg.averageSpeed as averageSpeedThree
+                   from pattern[every(first_avg = AverageSensorSpeed) -> second_avg = AverageSensorSpeed -> third_avg = AverageSensorSpeed]
+                   where second_avg.averageSpeed / first_avg.averageSpeed < 0.75 and second_avg.averageSpeed + 2 > third_avg.averageSpeed and
+                   second_avg.averageSpeed - 2 < third_avg.averageSpeed;
         """ ;
 
 
@@ -94,14 +91,26 @@ public class EsperKafkaProcessor {
         EPStatement avgSpeedStatement = runtime.getDeploymentService().getStatement(deployment.getDeploymentId(), "CalculateAverageSpeed");
         avgSpeedStatement.addListener(new AvgSpeedListener());
 
+        EPStatement jamStatement = runtime.getDeploymentService().getStatement(deployment.getDeploymentId(), "speedAlarm");
+        jamStatement.addListener(new SpeedDecreaseListener());
+
+
+
         // Daten generieren und an Esper senden
         SimpleDataGenerator generator = new SimpleDataGenerator(
                 1000, 3, 7, 900, 1100, 70, 100
         );
 
+        boolean jam_started = false;
         while (true) {
             List<SensorDataRecord> batch = generator.tick();
-            batch.forEach(System.out::println);
+            //batch.forEach(System.out::println);
+
+            if(generator.getVehicleLeftCounter() > 5 && !jam_started) {
+                System.out.println("Create jam ...");
+                jam_started = true;
+                generator.set_jam_at(700);
+            }
 
             for (SensorDataRecord rec : batch) {
                 runtime.getEventService().sendEventBean(

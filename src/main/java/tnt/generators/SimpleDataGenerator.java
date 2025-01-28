@@ -29,6 +29,10 @@ public class SimpleDataGenerator {
     private final int maxVehiclePerLane;
     private final List<Integer> startPositions;
     private final Random random = new Random();
+    private int jam_position = -1;
+    // global setting
+    private final double jam_speed = 3; // ~ 2 km/h
+    private int vehicle_left_counter = 0;
 
 
     public SimpleDataGenerator(
@@ -104,6 +108,14 @@ public class SimpleDataGenerator {
         }
     }
 
+    private void check_vehicle_has_reached_jam() {
+        for (Vehicle vehicle : vehicleList) {
+            if (vehicle.getPos() > this.jam_position && this.jam_position != -1) {
+                vehicle.setCurrentSpeedMS(jam_speed);
+            }
+        }
+    }
+
     private SensorDataRecord checkSensorPassages(ZonedDateTime measurementTime, int sensorId) {
         List<Double> measurements = new ArrayList<>();
         int sensorPosition = sensorPositions.get(sensorId);
@@ -123,7 +135,21 @@ public class SimpleDataGenerator {
     }
 
     private void checkVehicleLeftStreet() {
-        vehicleList.removeIf(vehicle -> vehicle.getPos() > this.streetLengthInM);
+        //vehicleList.removeIf(vehicle -> vehicle.getPos() > this.streetLengthInM);
+        List<Vehicle> vehiclesToRemove = new ArrayList<>();
+
+        for (Vehicle vehicle : vehicleList) {
+            if( vehicle.getPos() > this.streetLengthInM) {
+                vehiclesToRemove.add(vehicle);
+                vehicle_left_counter++;
+            }
+        }
+        vehicleList.removeAll(vehiclesToRemove);
+
+    }
+
+    public int getVehicleLeftCounter() {
+        return vehicle_left_counter;
     }
 
     private List<SensorDataRecord> generateData( ZonedDateTime measurementTime) {
@@ -143,7 +169,18 @@ public class SimpleDataGenerator {
         createNewVehicle(currentTime);
         List<SensorDataRecord> sensorData = generateData(currentTime);
         checkVehicleLeftStreet();
+        check_vehicle_has_reached_jam();
         return sensorData;
+    }
+
+    public void set_jam_at(int position) {
+        if (position > 0 && position < this.streetLengthInM) {
+            jam_position = position;
+        }
+    }
+
+    public void solve_jam() {
+        jam_position = -1;
     }
 
     private int convertKmHToMs(int speedKmH) {

@@ -12,9 +12,7 @@ public class SpeedDecreaseListener implements UpdateListener {
         }
 
         for (EventBean eventBean : newEvents) {
-            SpeedDecrease decreaseEvent = (SpeedDecrease) eventBean.getUnderlying();
-            System.out.println("Geschwindigkeitsabfall erkannt: " + decreaseEvent);
-            // Hier kannst du zusätzliche Verarbeitung hinzufügen, z.B. Alarmierung
+            System.out.println("Geschwindigkeitsabfall erkannt: " +  eventBean.getUnderlying());
         }
     }
 }
